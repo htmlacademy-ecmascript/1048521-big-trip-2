@@ -1,8 +1,9 @@
 import NewEventButtonView from './view/new-event-button-view.js';
 import TripInfoView from './view/trip-info-view.js';
-import TripFormFiltersView from './view/trip-form-filters-view.js';
+import TripFormFiltersView from './view/trip-form-filters-view.js.js';
 import TripFormSortView from './view/trip-form-sort-view.js';
 import {render, RenderPosition} from './render.js';
+import ListPresenter from './presenter/list-presenter.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const siteHeaderTripElement = siteHeaderElement.querySelector('.trip-main');
@@ -18,3 +19,7 @@ render(new TripFormFiltersView, tripControlsFiltersElement, RenderPosition.BEFOR
 
 
 render(new TripFormSortView, tripEventsSectionElement, RenderPosition.BEFOREEND);
+
+const listPresenter = new ListPresenter({boardContainer: tripEventsSectionElement});
+
+listPresenter.init();
