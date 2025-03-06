@@ -14,7 +14,7 @@ function mergeDataArrays(points, offers, destinations) {
     const destination = destinations.find((dest) => dest.id === point.destination);
     const destinationDetails = destination ? { name: destination.name, description: destination.description, pictures: destination.pictures } : null;
 
-    const { date_from: startDate, date_to: endDate, base_price: basePrice, ...rest } = point;
+    const { dateFrom: startDate, dateTo: endDate, basePrice: basePrice, ...rest } = point;
 
     return {
       ...rest,

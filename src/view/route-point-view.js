@@ -1,28 +1,35 @@
 import {createElement} from '../render.js';
-import {humanizeTaskDueDate} from '../utils.js';
+import {humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime} from '../utils.js';
 
 function createRoutPointTemplate(task) {
-  const {dateTo, destinationDetails, type, offers} = task;
-  const offersPrice = offers.map((item) => item.price);
-  const sumPrice = offersPrice.reduce(
-    (accumulator, currentValue) => accumulator + currentValue,
-  );
 
-  const date = humanizeTaskDueDate(dateTo);
+  const {destinationDetails, type, offers, startDate, endDate} = task;
+  // console.log(task);
+
+  const offersPrice = offers.map((item) => item.price);
+  const sumPrice = offersPrice.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const date = humanizeTaskDueDate(startDate);
+  const dateFull = showFullDate(startDate);
+  const startDateShow = showTripDuration(startDate);
+  const endDateShow = showTripDuration(endDate);
+  const startFullDateShow = showFullDateTime(startDate);
+  const endFullDateShow = showFullDateTime(endDate);
+  const timeCalculated = calculateTripDuration(startDate, endDate);
+
   return `<li class="trip-events__item">
             <div class="event">
-              <time class="event__date" datetime="2019-03-18">${date}</time>
+              <time class="event__date" datetime="${dateFull}">${date}</time>
               <div class="event__type">
                 <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
               </div>
               <h3 class="event__title">${type} ${destinationDetails.name}</h3>
               <div class="event__schedule">
                 <p class="event__time">
-                  <time class="event__start-time" datetime="2019-03-18T14:30">14:30</time>
+                  <time class="event__start-time" datetime="${startFullDateShow}">${startDateShow}</time>
                   &mdash;
-                  <time class="event__end-time" datetime="2019-03-18T16:05">16:05</time>
+                  <time class="event__end-time" datetime="${endFullDateShow}">${endDateShow}</time>
                 </p>
-                <p class="event__duration">01H 35M</p>
+                <p class="event__duration">${timeCalculated}</p>
               </div>
               <p class="event__price">
                 &euro;&nbsp;<span class="event__price-value">${sumPrice}</span>

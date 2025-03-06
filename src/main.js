@@ -6,6 +6,7 @@ import ListPresenter from './presenter/list-presenter.js';
 import {render, RenderPosition} from './render.js';
 import PointModel from './model/model.js';
 
+
 const siteHeaderElement = document.querySelector('.page-header');
 const siteHeaderTripElement = siteHeaderElement.querySelector('.trip-main');
 const tripControlsFiltersElement = siteHeaderElement.querySelector('.trip-controls__filters');
@@ -21,6 +22,8 @@ const headerPresenter = new HeaderPresenter({boardContainer: siteHeaderTripEleme
 headerPresenter.init();
 
 const tasksModel = new PointModel();
+
+console.log(tasksModel);
 const listPresenter = new ListPresenter({
   boardContainer: tripEventsSectionElement,
   tasksModel,
