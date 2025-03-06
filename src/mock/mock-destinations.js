@@ -1,5 +1,3 @@
-import {getRandomArrayElement} from '../utils.js';
-
 const mockDestinations =
 [
   {
@@ -36,9 +34,4 @@ const mockDestinations =
     ]
   },
 ];
-
-function getRandomDestinations() {
-  return getRandomArrayElement(mockDestinations);
-}
-
-export {getRandomDestinations};
+export {mockDestinations};

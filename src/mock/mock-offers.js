@@ -1,5 +1,3 @@
-import {getRandomArrayElement} from '../utils.js';
-
 const mockOffers =
 [
   {
@@ -41,7 +39,7 @@ const mockOffers =
       {
         id: 'b4c3e4e6-9053-42ce-b747-e281314fgd95',
         title: 'Upgrade to a business class',
-        price: 110
+        price: 159
       },
     ]
   },
@@ -51,7 +49,7 @@ const mockOffers =
       {
         id: 'b4c3e4e6-9077-42ce-b747-e281314fgd95',
         title: 'Upgrade to a business class',
-        price: 110
+        price: 180
       },
     ]
   },
@@ -61,7 +59,7 @@ const mockOffers =
       {
         id: 'b4c3e4e6-8877-42ce-b747-e281314fgd95',
         title: 'Upgrade to a business class',
-        price: 110
+        price: 88
       },
     ]
   },
@@ -71,7 +69,7 @@ const mockOffers =
       {
         id: 'b4c3e4e6-8877-42ce-b747-e554314fgd95',
         title: 'Upgrade to a business class',
-        price: 110
+        price: 145
       },
     ]
   },
@@ -81,7 +79,7 @@ const mockOffers =
       {
         id: 'b4c3e4e6-8877-42ce-b747-e556604fgd95',
         title: 'Upgrade to a business class',
-        price: 110
+        price: 69
       },
     ]
   },
@@ -91,14 +89,10 @@ const mockOffers =
       {
         id: 'b4c3e4e6-8877-88ce-b747-e556604fgd95',
         title: 'Upgrade to a business class',
-        price: 110
+        price: 200
       },
     ]
   },
 ];
 
-function getRandomOffers() {
-  return getRandomArrayElement(mockOffers);
-}
-
-export {getRandomOffers};
+export {mockOffers};

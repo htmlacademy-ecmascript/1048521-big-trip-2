@@ -1,13 +1,21 @@
 import {createElement} from '../render.js';
+import {humanizeTaskDueDate} from '../utils.js';
 
-function createRoutPointTemplate() {
+function createRoutPointTemplate(task) {
+  const {dateTo, destinationDetails, type, offers} = task;
+  const offersPrice = offers.map((item) => item.price);
+  const sumPrice = offersPrice.reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+  );
+
+  const date = humanizeTaskDueDate(dateTo);
   return `<li class="trip-events__item">
             <div class="event">
-              <time class="event__date" datetime="2019-03-18">MAR 18</time>
+              <time class="event__date" datetime="2019-03-18">${date}</time>
               <div class="event__type">
-                <img class="event__type-icon" width="42" height="42" src="img/icons/drive.png" alt="Event type icon">
+                <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
               </div>
-              <h3 class="event__title">Drive Chamonix</h3>
+              <h3 class="event__title">${type} ${destinationDetails.name}</h3>
               <div class="event__schedule">
                 <p class="event__time">
                   <time class="event__start-time" datetime="2019-03-18T14:30">14:30</time>
@@ -17,7 +25,7 @@ function createRoutPointTemplate() {
                 <p class="event__duration">01H 35M</p>
               </div>
               <p class="event__price">
-                &euro;&nbsp;<span class="event__price-value">160</span>
+                &euro;&nbsp;<span class="event__price-value">${sumPrice}</span>
               </p>
               <h4 class="visually-hidden">Offers:</h4>
               <ul class="event__selected-offers">
@@ -41,8 +49,12 @@ function createRoutPointTemplate() {
 }
 
 export default class RoutPointView {
+  constructor({task}) {
+    this.task = task;
+  }
+
   getTemplate() {
-    return createRoutPointTemplate();
+    return createRoutPointTemplate(this.task);
   }
 
   getElement() {
