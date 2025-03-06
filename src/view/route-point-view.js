@@ -1,46 +1,44 @@
 import {createElement} from '../render.js';
 import {humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime} from '../utils.js';
 
+
+function createAddServices(offers) {
+  return offers.map((offer) =>
+    `<li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`
+  ).join('');
+}
+
+
 function createRoutPointTemplate(task) {
-
   const {destinationDetails, type, offers, startDate, endDate} = task;
-  // console.log(task);
-
   const offersPrice = offers.map((item) => item.price);
   const sumPrice = offersPrice.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  const date = humanizeTaskDueDate(startDate);
-  const dateFull = showFullDate(startDate);
-  const startDateShow = showTripDuration(startDate);
-  const endDateShow = showTripDuration(endDate);
-  const startFullDateShow = showFullDateTime(startDate);
-  const endFullDateShow = showFullDateTime(endDate);
-  const timeCalculated = calculateTripDuration(startDate, endDate);
 
   return `<li class="trip-events__item">
             <div class="event">
-              <time class="event__date" datetime="${dateFull}">${date}</time>
+              <time class="event__date" datetime="${showFullDate(startDate)}">${humanizeTaskDueDate(startDate)}</time>
               <div class="event__type">
                 <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
               </div>
               <h3 class="event__title">${type} ${destinationDetails.name}</h3>
               <div class="event__schedule">
                 <p class="event__time">
-                  <time class="event__start-time" datetime="${startFullDateShow}">${startDateShow}</time>
+                  <time class="event__start-time" datetime="${showFullDateTime(startDate)}">${showTripDuration(startDate)}</time>
                   &mdash;
-                  <time class="event__end-time" datetime="${endFullDateShow}">${endDateShow}</time>
+                  <time class="event__end-time" datetime="${showFullDateTime(endDate)}">${showTripDuration(endDate)}</time>
                 </p>
-                <p class="event__duration">${timeCalculated}</p>
+                <p class="event__duration">${calculateTripDuration(startDate, endDate)}</p>
               </div>
               <p class="event__price">
                 &euro;&nbsp;<span class="event__price-value">${sumPrice}</span>
               </p>
               <h4 class="visually-hidden">Offers:</h4>
               <ul class="event__selected-offers">
-                <li class="event__offer">
-                  <span class="event__offer-title">Rent a car</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">200</span>
-                </li>
+                ${createAddServices(offers)}
               </ul>
               <button class="event__favorite-btn  event__favorite-btn--active" type="button">
                 <span class="visually-hidden">Add to favorite</span>

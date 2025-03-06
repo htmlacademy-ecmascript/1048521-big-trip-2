@@ -23,7 +23,6 @@ headerPresenter.init();
 
 const tasksModel = new PointModel();
 
-console.log(tasksModel);
 const listPresenter = new ListPresenter({
   boardContainer: tripEventsSectionElement,
   tasksModel,

@@ -1,4 +1,4 @@
-import {getRandomPoints} from '../mock/mock-points.js';
+import {getRandomPoints, mockPoints} from '../mock/mock-points.js';
 import {mockOffers} from '../mock/mock-offers.js';
 import {mockDestinations} from '../mock/mock-destinations.js';
 
@@ -27,7 +27,7 @@ function mergeDataArrays(points, offers, destinations) {
   });
 }
 
-const MOCK_POINTS = Array.from({length: 4}, getRandomPoints);
+const MOCK_POINTS = Array.from({length: mockPoints.length}, getRandomPoints);
 
 const mergedData = mergeDataArrays(MOCK_POINTS, mockOffers, mockDestinations);
 
