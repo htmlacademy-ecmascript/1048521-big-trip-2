@@ -4,6 +4,7 @@ import TripFormSortView from './view/trip-form-sort-view.js';
 import HeaderPresenter from './presenter/header-presenter.js';
 import ListPresenter from './presenter/list-presenter.js';
 import {render, RenderPosition} from './render.js';
+import PointModel from './model/model.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const siteHeaderTripElement = siteHeaderElement.querySelector('.trip-main');
@@ -19,5 +20,9 @@ render(new TripFormSortView, tripEventsSectionElement, RenderPosition.BEFOREEND)
 const headerPresenter = new HeaderPresenter({boardContainer: siteHeaderTripElement});
 headerPresenter.init();
 
-const listPresenter = new ListPresenter({boardContainer: tripEventsSectionElement});
+const tasksModel = new PointModel();
+const listPresenter = new ListPresenter({
+  boardContainer: tripEventsSectionElement,
+  tasksModel,
+});
 listPresenter.init();

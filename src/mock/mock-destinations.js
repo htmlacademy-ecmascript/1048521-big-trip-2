@@ -1,4 +1,6 @@
-const MOCK_DESTINATIONS =
+import {getRandomArrayElement} from '../utils.js';
+
+const mockDestinations =
 [
   {
     id: 'cfe416cq-10xa-ye10-8077-2fs9a01edcab',
@@ -35,4 +37,8 @@ const MOCK_DESTINATIONS =
   },
 ];
 
-export {MOCK_DESTINATIONS};
+function getRandomDestinations() {
+  return getRandomArrayElement(mockDestinations);
+}
+
+export {getRandomDestinations};
