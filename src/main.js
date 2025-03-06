@@ -17,9 +17,7 @@ render(new TripFormFiltersView, tripControlsFiltersElement, RenderPosition.BEFOR
 render(new TripFormSortView, tripEventsSectionElement, RenderPosition.BEFOREEND);
 
 const headerPresenter = new HeaderPresenter({boardContainer: siteHeaderTripElement});
-
 headerPresenter.init();
 
 const listPresenter = new ListPresenter({boardContainer: tripEventsSectionElement});
-
 listPresenter.init();

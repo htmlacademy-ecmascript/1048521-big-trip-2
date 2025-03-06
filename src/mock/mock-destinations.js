@@ -1,4 +1,4 @@
-const destinations =
+const MOCK_DESTINATIONS =
 [
   {
     id: 'cfe416cq-10xa-ye10-8077-2fs9a01edcab',
@@ -34,3 +34,5 @@ const destinations =
     ]
   },
 ];
+
+export {MOCK_DESTINATIONS};
