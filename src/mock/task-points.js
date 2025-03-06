@@ -7,7 +7,8 @@ const points = [
     destination: 'cfe416cq-10xa-ye10-8077-2fs9a01edcab',
     isFavorite: false,
     offers: [
-      'b4c3e4e6-9053-42ce-b747-e281314baa31'
+      'b4c3e4e6-9053-42ce-b747-e281314baa31',
+      'b4c3e4e6-9053-42ce-b747-e281314baaff'
     ],
     type: 'taxi'
   },
@@ -43,7 +44,8 @@ const points = [
     destination: 'cfe416cq-10xa-ye10-8077-2fs9a01edcaf',
     isFavorite: false,
     offers: [
-      'b4c3e4e6-9053-42ce-b747-e281314baa31'
+      'b4c3e4e6-9053-42ce-b747-e281314baa31',
+      'b4c3e4e6-9053-42ce-b747-e281314baaff'
     ],
     type: 'ship'
   },
@@ -91,7 +93,8 @@ const points = [
     destination: 'cfe416cq-10xa-ye10-8077-2fs9a01edcas',
     isFavorite: false,
     offers: [
-      'b4c3e4e6-9053-42ce-b747-e281314baa31'
+      'b4c3e4e6-9053-42ce-b747-e281314baa31',
+      'b4c3e4e6-9053-42ce-b747-e281314baaff'
     ],
     type: 'sightseeing'
   },
@@ -107,55 +110,4 @@ const points = [
     ],
     type: 'restaurant'
   },
-];
-
-const destinations =
-[
-  {
-    id: 'cfe416cq-10xa-ye10-8077-2fs9a01edcab',
-    description: 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-    name: 'Paris',
-    pictures: [
-      {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
-        description: 'Chamonix parliament building'
-      }
-    ]
-  },
-  {
-    id: 'cfe416cq-10xa-ye10-8077-2fs9a01edcaf',
-    description: 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-    name: 'Venice',
-    pictures: [
-      {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
-        description: 'Chamonix parliament building'
-      }
-    ]
-  },
-  {
-    id: 'cfe416cq-10xa-ye10-8077-2fs9a01edcas',
-    description: 'Chamonix, is a beautiful city, a true asian pearl, with crowded streets.',
-    name: 'Milan',
-    pictures: [
-      {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
-        description: 'Chamonix parliament building'
-      }
-    ]
-  },
-];
-
-const offers =
-[
-  {
-    type: 'taxi',
-    offers: [
-      {
-        id: 'b4c3e4e6-9053-42ce-b747-e281314baa31',
-        title: 'Upgrade to a business class',
-        price: 120
-      }
-    ]
-  }
 ];
