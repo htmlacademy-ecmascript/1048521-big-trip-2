@@ -1,5 +1,5 @@
 import {createElement} from '../render.js';
-import {humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate} from '../utils.js';
+import {humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate, getRandomArrayElement} from '../utils.js';
 
 function createAddNewPointWithout(type, offers, startDate, endDate, basePrice) {
   return `<form class="event event--edit hidden" action="#" method="post">
@@ -111,10 +111,10 @@ function createAddNewPointWithout(type, offers, startDate, endDate, basePrice) {
 }
 
 function createButtonAddServices(offers) {
-  return offers.map((offer, index) =>
+  return offers.map((offer) =>
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-${index}" type="checkbox" name="event-offer-comfort" checked>
-      <label class="event__offer-label" for="event-offer-comfort-${index}">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-${offer.id}" type="checkbox" name="event-offer-comfort" checked>
+      <label class="event__offer-label" for="event-offer-comfort-${offer.id}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
