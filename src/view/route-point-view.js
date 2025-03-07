@@ -1,8 +1,8 @@
 import {createElement} from '../render.js';
 import {humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate} from '../utils.js';
 
-function createAddNewPointWithout(destinationDetails, type, offers, startDate, endDate, basePrice) {
-  return `<form class="event event--edit" action="#" method="post">
+function createAddNewPointWithout(type, offers, startDate, endDate, basePrice) {
+  return `<form class="event event--edit hidden" action="#" method="post">
             <header class="event__header">
               <div class="event__type-wrapper">
                 <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -111,10 +111,10 @@ function createAddNewPointWithout(destinationDetails, type, offers, startDate, e
 }
 
 function createButtonAddServices(offers) {
-  return offers.map((offer) =>
+  return offers.map((offer, index) =>
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-      <label class="event__offer-label" for="event-offer-comfort-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-${index}" type="checkbox" name="event-offer-comfort" checked>
+      <label class="event__offer-label" for="event-offer-comfort-${index}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
@@ -169,13 +169,14 @@ function createRoutPointTemplate(task) {
                 <span class="visually-hidden">Open event</span>
               </button>
             </div>
-            ${createAddNewPointWithout(destinationDetails, type, offers, startDate, endDate, basePrice)}
+            ${createAddNewPointWithout(type, offers, startDate, endDate, basePrice)}
           </li>`;
 }
 
 export default class RoutPointView {
   constructor({task}) {
     this.task = task;
+    this.element = null;
   }
 
   getTemplate() {
@@ -185,10 +186,18 @@ export default class RoutPointView {
   getElement() {
     if (!this.element) {
       this.element = createElement(this.getTemplate());
+      const eventRollupButtonElement = this.element.querySelector('.event__rollup-btn');
+      eventRollupButtonElement.addEventListener('click', this.handleRollupButtonClick);
     }
-
     return this.element;
   }
+
+  handleRollupButtonClick = () => {
+    const formElement = this.element.querySelector('.event--edit');
+    const pointElement = this.element.querySelector('.event');
+    formElement.classList.toggle('hidden');
+    pointElement.classList.toggle('hidden');
+  };
 
   removeElement() {
     this.element = null;
