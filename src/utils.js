@@ -4,12 +4,18 @@ import utc from 'dayjs/plugin/utc';
 const DATE_FORMAT = 'MMM D';
 const TIME_FORMAT = 'HH:mm';
 const FULL_DATE_FORMAT = 'YYYY-MM-DD';
-const FULL_DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm';
+const FULL_DATE_TIME_FORMAT = 'YYYY-MM-DDT HH:mm';
+const DATE_NEW_POINT_FORMAT = 'DD/MM/YY HH:mm';
 const MINUTES_PER_HOUR = 60;
 dayjs.extend(utc);
 
+
 function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
+}
+
+function showNewPointDate(dueDate) {
+  return dueDate ? dayjs.utc(dueDate).format(DATE_NEW_POINT_FORMAT) : '';
 }
 
 function showFullDate(dueDate) {
@@ -35,4 +41,4 @@ function calculateTripDuration(start, end) {
   return `${hours}H ${minutes}M`;
 }
 
-export {getRandomArrayElement, humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime};
+export {getRandomArrayElement, humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate};
