@@ -6,6 +6,7 @@ export default class ListPresenter {
   #tasksModel = null;
   #boardContainer = null;
   #listComponent = new TripEventsListView;
+  #boardTasks = [];
 
   constructor({boardContainer, tasksModel}) {
     this.#boardContainer = boardContainer;
@@ -13,12 +14,17 @@ export default class ListPresenter {
   }
 
   init() {
-    this.boardTasks = [...this.#tasksModel.getTasks()];
+    this.#boardTasks = [...this.#tasksModel.getTasks()];
 
     render(this.#listComponent, this.#boardContainer);
 
-    for (let i = 0; i < this.boardTasks.length; i++) {
-      render(new RoutPointView({task: this.boardTasks[i]}), this.#listComponent.element);
+    for (let i = 0; i < this.#boardTasks.length; i++) {
+      this.#renderTask(this.#boardTasks[i]);
     }
+  }
+
+  #renderTask(task) {
+    const taskComponent = new RoutPointView({task});
+    render(taskComponent, this.#listComponent.element);
   }
 }
