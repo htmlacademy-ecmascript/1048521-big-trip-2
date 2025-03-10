@@ -134,7 +134,7 @@ function createAddServices(offers) {
 }
 
 function createRoutPointTemplate(task) {
-  console.log(task);
+  // console.log(task);
   const {destinationDetails, type, offers, startDate, endDate, basePrice} = task;
 
   return `<li class="trip-events__item">
