@@ -36,7 +36,7 @@ export default class ListPresenter {
       task,
       onFormSubmit: () => {
         replaceFormToCard();
-        document.removeEventListener('keydown', escKeyDownHandler);
+        document.addEventListener('keydown', escKeyDownHandler);
       }
     });
 
@@ -44,7 +44,7 @@ export default class ListPresenter {
       task,
       onEditClick: () => {
         replaceCardToForm();
-        document.removeEventListener('keydown', escKeyDownHandler);
+        document.addEventListener('keydown', escKeyDownHandler);
       }
     });
 
