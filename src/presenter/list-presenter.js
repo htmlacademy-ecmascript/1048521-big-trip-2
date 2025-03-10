@@ -1,6 +1,6 @@
 import TripEventsListView from '../view/trip-events-list-view.js';
 import RoutPointView from '../view/route-point-view.js';
-import {render} from '../render.js';
+import {render} from '../framework/render.js';
 
 export default class ListPresenter {
   listComponent = new TripEventsListView;
@@ -16,7 +16,7 @@ export default class ListPresenter {
     render(this.listComponent, this.boardContainer);
 
     for (let i = 0; i < this.boardTasks.length; i++) {
-      render(new RoutPointView({task: this.boardTasks[i]}), this.listComponent.getElement());
+      render(new RoutPointView({task: this.boardTasks[i]}), this.listComponent.element);
     }
   }
 }

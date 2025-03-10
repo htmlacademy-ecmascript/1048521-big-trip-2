@@ -3,7 +3,7 @@ import TripFormFiltersView from './view/trip-form-filters-view.js.js';
 import TripFormSortView from './view/trip-form-sort-view.js';
 import HeaderPresenter from './presenter/header-presenter.js';
 import ListPresenter from './presenter/list-presenter.js';
-import {render, RenderPosition} from './render.js';
+import {render, RenderPosition} from './framework/render.js';
 import PointModel from './model/model.js';
 
 

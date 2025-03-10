@@ -1,5 +1,5 @@
-import {createElement} from '../render.js';
-import {humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate, getRandomArrayElement} from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import {humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate} from '../utils.js';
 
 function createAddNewPointWithout(type, offers, startDate, endDate, basePrice) {
   return `<form class="event event--edit hidden" action="#" method="post">
@@ -173,23 +173,26 @@ function createRoutPointTemplate(task) {
           </li>`;
 }
 
-export default class RoutPointView {
+export default class RoutPointView extends AbstractView {
+  #task = null;
+  #element = null;
   constructor({task}) {
-    this.task = task;
-    this.element = null;
+    super();
+    this.#task = task;
+    this.#element = null;
   }
 
-  getTemplate() {
-    return createRoutPointTemplate(this.task);
+  get template() {
+    return createRoutPointTemplate(this.#task);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-      const eventRollupButtonElement = this.element.querySelector('.event__rollup-btn');
+  get element() {
+    if (!this.#element) {
+      this.#element = super.element;
+      const eventRollupButtonElement = this.#element.querySelector('.event__rollup-btn');
       eventRollupButtonElement.addEventListener('click', this.handleRollupButtonClick);
     }
-    return this.element;
+    return this.#element;
   }
 
   handleRollupButtonClick = () => {
@@ -198,8 +201,4 @@ export default class RoutPointView {
     formElement.classList.toggle('hidden');
     pointElement.classList.toggle('hidden');
   };
-
-  removeElement() {
-    this.element = null;
-  }
 }
