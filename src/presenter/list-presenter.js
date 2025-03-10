@@ -1,6 +1,8 @@
 import TripEventsListView from '../view/trip-events-list-view.js';
 import RoutPointView from '../view/route-point-view.js';
-import {render} from '../framework/render.js';
+import {render, replace} from '../framework/render.js';
+import RoutPointEditView from '../view/route-point-edit-view.js';
+import RoutPointBoxView from '../view/route-point-box-view.js';
 
 export default class ListPresenter {
   #tasksModel = null;
@@ -15,16 +17,52 @@ export default class ListPresenter {
 
   init() {
     this.#boardTasks = [...this.#tasksModel.getTasks()];
-
     render(this.#listComponent, this.#boardContainer);
-
     for (let i = 0; i < this.#boardTasks.length; i++) {
       this.#renderTask(this.#boardTasks[i]);
     }
   }
 
   #renderTask(task) {
-    const taskComponent = new RoutPointView({task});
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToCard();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
+    const taskEditComponent = new RoutPointEditView({
+      task,
+      onFormSubmit: () => {
+        replaceFormToCard();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    });
+
+    const taskBoxComponent = new RoutPointBoxView({
+      task,
+      onEditClick: () => {
+        replaceCardToForm();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    });
+
+    const taskComponent = new RoutPointView({
+      task,
+      taskEditComponent,
+      taskBoxComponent,
+    });
+
     render(taskComponent, this.#listComponent.element);
+    render(taskBoxComponent, taskComponent.element);
+
+    function replaceCardToForm() {
+      replace(taskEditComponent, taskBoxComponent);
+    }
+
+    function replaceFormToCard() {
+      replace(taskBoxComponent, taskEditComponent);
+    }
   }
 }
