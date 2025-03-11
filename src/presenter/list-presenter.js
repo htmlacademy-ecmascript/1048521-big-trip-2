@@ -1,22 +1,68 @@
 import TripEventsListView from '../view/trip-events-list-view.js';
 import RoutPointView from '../view/route-point-view.js';
-import {render} from '../render.js';
+import {render, replace} from '../framework/render.js';
+import RoutPointEditView from '../view/route-point-edit-view.js';
+import RoutPointBoxView from '../view/route-point-box-view.js';
 
 export default class ListPresenter {
-  listComponent = new TripEventsListView;
+  #tasksModel = null;
+  #boardContainer = null;
+  #listComponent = new TripEventsListView;
+  #boardTasks = [];
 
   constructor({boardContainer, tasksModel}) {
-    this.boardContainer = boardContainer;
-    this.tasksModel = tasksModel;
+    this.#boardContainer = boardContainer;
+    this.#tasksModel = tasksModel;
   }
 
   init() {
-    this.boardTasks = [...this.tasksModel.getTasks()];
+    this.#boardTasks = [...this.#tasksModel.getTasks()];
+    render(this.#listComponent, this.#boardContainer);
+    for (let i = 0; i < this.#boardTasks.length; i++) {
+      this.#renderTask(this.#boardTasks[i]);
+    }
+  }
 
-    render(this.listComponent, this.boardContainer);
+  #renderTask(task) {
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToCard();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
 
-    for (let i = 0; i < this.boardTasks.length; i++) {
-      render(new RoutPointView({task: this.boardTasks[i]}), this.listComponent.getElement());
+    const taskEditComponent = new RoutPointEditView({
+      task,
+      onFormSubmit: () => {
+        replaceFormToCard();
+        document.addEventListener('keydown', escKeyDownHandler);
+      }
+    });
+
+    const taskBoxComponent = new RoutPointBoxView({
+      task,
+      onEditClick: () => {
+        replaceCardToForm();
+        document.addEventListener('keydown', escKeyDownHandler);
+      }
+    });
+
+    const taskComponent = new RoutPointView({
+      task,
+      taskEditComponent,
+      taskBoxComponent,
+    });
+
+    render(taskComponent, this.#listComponent.element);
+    render(taskBoxComponent, taskComponent.element);
+
+    function replaceCardToForm() {
+      replace(taskEditComponent, taskBoxComponent);
+    }
+
+    function replaceFormToCard() {
+      replace(taskBoxComponent, taskEditComponent);
     }
   }
 }

@@ -32,12 +32,12 @@ const MOCK_POINTS = Array.from({length: mockPoints.length}, getRandomPoints);
 const mergedData = mergeDataArrays(MOCK_POINTS, mockOffers, mockDestinations);
 
 export default class PointModel {
-  tasks = null;
+  #tasks = null;
   constructor() {
-    this.tasks = mergedData;
+    this.#tasks = mergedData;
   }
 
   getTasks() {
-    return this.tasks;
+    return this.#tasks;
   }
 }
