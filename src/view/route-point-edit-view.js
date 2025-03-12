@@ -98,11 +98,12 @@ function createAddNewPointWithout(type, offers, startDate, endDate, basePrice) {
 
 
               <section class="event__section  event__section--offers">
-                <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-                <div class="event__available-offers">
-                  ${createButtonAddServices(offers)}
+                ${offers && offers.length > 0 ? `
+                  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+                  <div class="event__available-offers">
+                    ${createButtonAddServices(offers)}
                   </div>
-                </div>
+                ` : ''}
               </section>
             </section>
           </form>`;
