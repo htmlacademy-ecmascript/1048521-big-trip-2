@@ -3,6 +3,7 @@ import RoutPointView from '../view/route-point-view.js';
 import {render, replace} from '../framework/render.js';
 import RoutPointEditView from '../view/route-point-edit-view.js';
 import RoutPointBoxView from '../view/route-point-box-view.js';
+import NoTaskView from '../view/no-task-view.js';
 
 export default class ListPresenter {
   #tasksModel = null;
@@ -18,6 +19,10 @@ export default class ListPresenter {
   init() {
     this.#boardTasks = [...this.#tasksModel.getTasks()];
     render(this.#listComponent, this.#boardContainer);
+    if (this.#boardTasks.every((task) => task.isArchive)) {
+      render(new NoTaskView(), this.#listComponent.element);
+      return;
+    }
     for (let i = 0; i < this.#boardTasks.length; i++) {
       this.#renderTask(this.#boardTasks[i]);
     }
