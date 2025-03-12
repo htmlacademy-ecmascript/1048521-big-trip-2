@@ -36,8 +36,12 @@ function createAddNewPointWithout(type, offers, startDate, endDate, basePrice) {
               </div>
 
               <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-              <button class="event__reset-btn" type="reset">Cancel</button>
+              <button class="event__reset-btn" type="reset">Delete</button>
+              <button class="event__rollup-btn" type="button">
+                <span class="visually-hidden">Open event</span>
+              </button>
             </header>
+
             <section class="event__details">
               <section class="event__section  event__section--offers">
                 ${offers && offers.length > 0 ? `
@@ -145,7 +149,7 @@ export default class RoutPointEditView extends AbstractView {
     if (!this.#element) {
       this.#element = super.element;
       this.#element.addEventListener('submit', this.#formSubmitHandler);
-      const closeElement = this.#element.querySelector('.event__reset-btn');
+      const closeElement = this.#element.querySelector('.event__rollup-btn');
       closeElement.addEventListener('click', this.#formSubmitHandler);
     }
     return this.#element;
