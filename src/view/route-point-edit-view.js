@@ -133,11 +133,13 @@ export default class RoutPointEditView extends AbstractView {
   #task = null;
   #handleFormSubmit = null;
   #element = null;
+  #handleFormDelete = null;
 
-  constructor({task, onFormSubmit}) {
+  constructor({task, onFormSubmit, onDeleteForm}) {
     super();
     this.#task = task;
     this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormDelete = onDeleteForm;
   }
 
   get template() {
@@ -150,7 +152,9 @@ export default class RoutPointEditView extends AbstractView {
       this.#element = super.element;
       this.#element.addEventListener('submit', this.#formSubmitHandler);
       const closeElement = this.#element.querySelector('.event__rollup-btn');
+      const deleteElement = this.#element.querySelector('.event__reset-btn');
       closeElement.addEventListener('click', this.#formSubmitHandler);
+      deleteElement.addEventListener('click', this.#formDeleteHandler);
     }
     return this.#element;
   }
@@ -158,5 +162,9 @@ export default class RoutPointEditView extends AbstractView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit();
+  };
+
+  #formDeleteHandler = () => {
+    this.#handleFormDelete();
   };
 }
