@@ -16,12 +16,14 @@ render(new NewEventButtonView(), siteHeaderTripElement, RenderPosition.BEFOREEND
 
 render(new TripFormFiltersView, tripControlsFiltersElement, RenderPosition.BEFOREEND);
 
-render(new TripFormSortView, tripEventsSectionElement, RenderPosition.BEFOREEND);
+const tasksModel = new PointModel();
+
+if(tasksModel.getTasks().length !== 0){
+  render(new TripFormSortView, tripEventsSectionElement, RenderPosition.BEFOREEND);
+}
 
 const headerPresenter = new HeaderPresenter({boardContainer: siteHeaderTripElement});
 headerPresenter.init();
-
-const tasksModel = new PointModel();
 
 const listPresenter = new ListPresenter({
   boardContainer: tripEventsSectionElement,
