@@ -19,6 +19,10 @@ export default class PointPresenter {
   init(task) {
     this.#task = task;
 
+    const prevTaskComponent = this.#taskComponent;
+    const prevTaskEditComponent = this.#taskEditComponent;
+    const prevTaskBoxComponent = this.#taskBoxComponent;
+
     this.#taskEditComponent = new RoutPointEditView({
       task: this.#task,
       onFormSubmit: () => {
@@ -42,8 +46,29 @@ export default class PointPresenter {
       taskBoxComponent: this.#taskBoxComponent,
     });
 
-    render(this.#taskComponent, this.#listComponent);
-    render(this.#taskBoxComponent, this.#taskComponent.element);
+    if (prevTaskComponent === null || prevTaskEditComponent === null || prevTaskBoxComponent === null) {
+      render(this.#taskComponent, this.#listComponent);
+      render(this.#taskBoxComponent, this.#taskComponent.element);
+      return;
+    }
+
+    if (this.#listComponent.contains(prevTaskComponent.element)) {
+      replace(this.#taskComponent, prevTaskComponent);
+    }
+
+    if (this.#listComponent.contains(prevTaskEditComponent.element)) {
+      replace(this.#taskEditComponent, prevTaskEditComponent);
+    }
+
+    remove(prevTaskComponent);
+    remove(prevTaskEditComponent);
+    remove(prevTaskBoxComponent);
+  }
+
+  destroy() {
+    remove(this.#taskComponent);
+    remove(this.#taskEditComponent);
+    remove(this.#taskBoxComponent);
   }
 
   #replaceCardToForm() {
