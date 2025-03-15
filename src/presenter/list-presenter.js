@@ -10,6 +10,7 @@ export default class ListPresenter {
   #listComponent = new TripEventsListView;
   #boardTasks = [];
   #sortElement = new TripFormSortView;
+  #taskPresenters = new Map();
 
   constructor({boardContainer, tasksModel}) {
     this.#boardContainer = boardContainer;
@@ -39,5 +40,11 @@ export default class ListPresenter {
       taskListContainer: this.#listComponent.element,
     });
     taskPresenter.init(task);
+    this.#taskPresenters.set(task.id, taskPresenter);
   }
+
+  // #clearTaskList() {
+  //   this.#taskPresenters.forEach((presenter) => presenter.destroy());
+  //   this.#taskPresenters.clear();
+  // }
 }
