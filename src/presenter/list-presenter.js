@@ -1,15 +1,15 @@
 import TripEventsListView from '../view/trip-events-list-view.js';
-import RoutPointView from '../view/route-point-view.js';
-import {remove, render, replace} from '../framework/render.js';
-import RoutPointEditView from '../view/route-point-edit-view.js';
-import RoutPointBoxView from '../view/route-point-box-view.js';
+import {remove, render, RenderPosition} from '../framework/render.js';
 import NoTaskView from '../view/no-task-view.js';
+import TripFormSortView from '../view/trip-form-sort-view.js';
+import PointPresenter from './point-presenter.js';
 
 export default class ListPresenter {
   #tasksModel = null;
   #boardContainer = null;
   #listComponent = new TripEventsListView;
   #boardTasks = [];
+  #sortElement = new TripFormSortView;
 
   constructor({boardContainer, tasksModel}) {
     this.#boardContainer = boardContainer;
@@ -19,8 +19,10 @@ export default class ListPresenter {
   init() {
     this.#boardTasks = [...this.#tasksModel.getTasks()];
     render(this.#listComponent, this.#boardContainer);
+    this.#renderSort();
     if (this.#boardTasks.every((task) => task.isArchive)) {
       render(new NoTaskView(), this.#listComponent.element);
+      remove(this.#sortElement);
       return;
     }
     for (let i = 0; i < this.#boardTasks.length; i++) {
@@ -28,53 +30,14 @@ export default class ListPresenter {
     }
   }
 
+  #renderSort() {
+    render(this.#sortElement, this.#listComponent.element, RenderPosition.AFTERBEGIN);
+  }
+
   #renderTask(task) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const taskEditComponent = new RoutPointEditView({
-      task,
-      onFormSubmit: () => {
-        replaceFormToCard();
-        document.addEventListener('keydown', escKeyDownHandler);
-      },
-      onDeleteForm: () => {
-        removeForm();
-      }
+    const taskPresenter = new PointPresenter({
+      taskListContainer: this.#listComponent.element,
     });
-
-    const taskBoxComponent = new RoutPointBoxView({
-      task,
-      onEditClick: () => {
-        replaceCardToForm();
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    const taskComponent = new RoutPointView({
-      task,
-      taskEditComponent,
-      taskBoxComponent,
-    });
-
-    render(taskComponent, this.#listComponent.element);
-    render(taskBoxComponent, taskComponent.element);
-
-    function replaceCardToForm() {
-      replace(taskEditComponent, taskBoxComponent);
-    }
-
-    function replaceFormToCard() {
-      replace(taskBoxComponent, taskEditComponent);
-    }
-
-    function removeForm() {
-      remove(taskEditComponent);
-    }
+    taskPresenter.init(task);
   }
 }

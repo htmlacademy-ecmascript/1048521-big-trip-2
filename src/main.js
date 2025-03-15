@@ -1,6 +1,5 @@
 import NewEventButtonView from './view/new-event-button-view.js';
 import TripFormFiltersView from './view/trip-form-filters-view.js.js';
-import TripFormSortView from './view/trip-form-sort-view.js';
 import HeaderPresenter from './presenter/header-presenter.js';
 import ListPresenter from './presenter/list-presenter.js';
 import {render, RenderPosition} from './framework/render.js';
@@ -18,10 +17,6 @@ render(new TripFormFiltersView, tripControlsFiltersElement, RenderPosition.BEFOR
 
 const tasksModel = new PointModel();
 
-if(tasksModel.getTasks().length !== 0){
-  render(new TripFormSortView, tripEventsSectionElement, RenderPosition.BEFOREEND);
-}
-
 const headerPresenter = new HeaderPresenter({boardContainer: siteHeaderTripElement});
 headerPresenter.init();
 
@@ -29,4 +24,6 @@ const listPresenter = new ListPresenter({
   boardContainer: tripEventsSectionElement,
   tasksModel,
 });
-listPresenter.init();
+if(tasksModel.getTasks().length !== 0){
+  listPresenter.init();
+}
