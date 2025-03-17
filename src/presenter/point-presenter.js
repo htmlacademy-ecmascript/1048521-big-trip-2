@@ -33,7 +33,7 @@ export default class PointPresenter {
     const prevTaskEditComponent = this.#taskEditComponent;
     const prevTaskBoxComponent = this.#taskBoxComponent;
 
-    this.#taskEditComponent = new RoutPointView({
+    this.#taskEditComponent = new RoutPointEditView({
       task: this.#task,
       onFormSubmit: this.#handleFormSubmit,
       onDeleteForm: () => {
@@ -69,12 +69,12 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.DEFAULT) {
-      console.log(this.#taskBoxComponent);
+      // console.log(this.#taskBoxComponent);
       replace(this.#taskBoxComponent, prevTaskBoxComponent);
     }
 
     if (this.#mode === Mode.EDITING) {
-      console.log(this.#taskEditComponent);
+      // console.log(this.#taskEditComponent);
       replace(this.#taskEditComponent, prevTaskEditComponent);
     }
 
