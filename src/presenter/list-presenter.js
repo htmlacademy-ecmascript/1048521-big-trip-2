@@ -3,6 +3,7 @@ import {remove, render, RenderPosition} from '../framework/render.js';
 import NoTaskView from '../view/no-task-view.js';
 import TripFormSortView from '../view/trip-form-sort-view.js';
 import PointPresenter from './point-presenter.js';
+import {updateItem} from '../utils.js';
 
 export default class ListPresenter {
   #tasksModel = null;
@@ -31,6 +32,18 @@ export default class ListPresenter {
     }
   }
 
+  #handleModeChange = () => {
+    this.#taskPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #handleTaskChange = (updatedTask) => {
+    // console.log(this.#boardTasks);
+    // console.log(updatedTask);
+    this.#boardTasks = updateItem(this.#boardTasks, updatedTask);
+    this.#taskPresenters.get(updatedTask.id).init(updatedTask);
+    // console.log(this.#taskPresenters.get(updatedTask.id));
+  };
+
   #renderSort() {
     render(this.#sortElement, this.#listComponent.element, RenderPosition.AFTERBEGIN);
   }
@@ -38,8 +51,11 @@ export default class ListPresenter {
   #renderTask(task) {
     const taskPresenter = new PointPresenter({
       taskListContainer: this.#listComponent.element,
+      onDataChange: this.#handleTaskChange,
+      onModeChange: this.#handleModeChange
     });
     taskPresenter.init(task);
+    // console.log(task.id);
     this.#taskPresenters.set(task.id, taskPresenter);
   }
 

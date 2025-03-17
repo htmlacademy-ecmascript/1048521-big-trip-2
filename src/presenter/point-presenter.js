@@ -5,15 +5,25 @@ import RoutPointEditView from '../view/route-point-edit-view.js';
 import RoutPointBoxView from '../view/route-point-box-view.js';
 
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class PointPresenter {
   #listComponent = new TripEventsListView;
   #taskEditComponent = null;
   #taskBoxComponent = null;
   #taskComponent = null;
   #task = null;
+  #handleDataChange = null;
+  #handleModeChange = null;
+  #mode = Mode.DEFAULT;
 
-  constructor({taskListContainer}) {
+  constructor({taskListContainer, onDataChange, onModeChange}) {
     this.#listComponent = taskListContainer;
+    this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(task) {
@@ -23,11 +33,9 @@ export default class PointPresenter {
     const prevTaskEditComponent = this.#taskEditComponent;
     const prevTaskBoxComponent = this.#taskBoxComponent;
 
-    this.#taskEditComponent = new RoutPointEditView({
+    this.#taskEditComponent = new RoutPointView({
       task: this.#task,
-      onFormSubmit: () => {
-        this.#replaceFormToCard();
-      },
+      onFormSubmit: this.#handleFormSubmit,
       onDeleteForm: () => {
         this.#removeForm();
       }
@@ -37,7 +45,10 @@ export default class PointPresenter {
       task: this.#task,
       onEditClick: () => {
         this.#replaceCardToForm();
-      }
+      },
+      onFavoriteClick: () => {
+        this.#handleFavoriteClick();
+      },
     });
 
     this.#taskComponent = new RoutPointView({
@@ -53,10 +64,17 @@ export default class PointPresenter {
     }
 
     if (this.#listComponent.contains(prevTaskComponent.element)) {
+      // console.log(prevTaskComponent.element);
       replace(this.#taskComponent, prevTaskComponent);
     }
 
-    if (this.#listComponent.contains(prevTaskEditComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
+      console.log(this.#taskBoxComponent);
+      replace(this.#taskBoxComponent, prevTaskBoxComponent);
+    }
+
+    if (this.#mode === Mode.EDITING) {
+      console.log(this.#taskEditComponent);
       replace(this.#taskEditComponent, prevTaskEditComponent);
     }
 
@@ -71,14 +89,23 @@ export default class PointPresenter {
     remove(this.#taskBoxComponent);
   }
 
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToCard();
+    }
+  }
+
   #replaceCardToForm() {
     replace(this.#taskEditComponent, this.#taskBoxComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   #replaceFormToCard() {
     replace(this.#taskBoxComponent, this.#taskEditComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   }
 
   #removeForm() {
@@ -91,5 +118,15 @@ export default class PointPresenter {
       this.#replaceFormToCard();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
+  };
+
+  #handleFavoriteClick = () => {
+    // console.log({...this.#task, isFavorite: !this.#task.isFavorite});
+    this.#handleDataChange({...this.#task, isFavorite: !this.#task.isFavorite});
+  };
+
+  #handleFormSubmit = (task) => {
+    this.#handleDataChange(task);
+    this.#replaceFormToCard();
   };
 }
