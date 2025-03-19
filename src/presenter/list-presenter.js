@@ -25,7 +25,6 @@ export default class ListPresenter {
     if (this.#boardTasks.every((task) => task.isArchive)) {
       render(new NoTaskView(), this.#listComponent.element);
       remove(this.#sortElement);
-      return;
     }
     for (let i = 0; i < this.#boardTasks.length; i++) {
       this.#renderTask(this.#boardTasks[i]);
@@ -37,11 +36,8 @@ export default class ListPresenter {
   };
 
   #handleTaskChange = (updatedTask) => {
-    // console.log(this.#boardTasks);
-    // console.log(updatedTask);
     this.#boardTasks = updateItem(this.#boardTasks, updatedTask);
-    this.#taskPresenters.get(updatedTask.id).init(updatedTask);
-    // console.log(this.#taskPresenters.get(updatedTask.id));
+    // this.#taskPresenters.get(updatedTask.id).init(updatedTask);
   };
 
   #renderSort() {
@@ -55,8 +51,7 @@ export default class ListPresenter {
       onModeChange: this.#handleModeChange
     });
     taskPresenter.init(task);
-    // console.log(task.id);
-    this.#taskPresenters.set(task.id, taskPresenter);
+    // this.#taskPresenters.set(task.id, taskPresenter);
   }
 
   // #clearTaskList() {
