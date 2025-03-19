@@ -2,13 +2,24 @@ import TripEventsListView from '../view/trip-events-list-view.js';
 import RoutPointView from '../view/route-point-view.js';
 import {remove, render, replace} from '../framework/render.js';
 import RoutPointEditView from '../view/route-point-edit-view.js';
+import {ModeCode} from '../const.js';
 
+/**
+ * @const
+ */
+/**
+ * Возраст кота
+ * @type {number}
+ */
 
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-};
-
+/**
+ * @class
+ */
+/**
+ * Функция для создания элемента на основе разметки
+ * @param {string} template Разметка в виде строки
+ * @returns {HTMLElement} Созданный элемент
+ */
 export default class PointPresenter {
   #listComponent = new TripEventsListView;
   #taskEditComponent = null;
@@ -16,7 +27,7 @@ export default class PointPresenter {
   #task = null;
   #handleDataChange = null;
   #handleModeChange = null;
-  #mode = Mode.DEFAULT;
+  #mode = ModeCode.DEFAULT;
 
   constructor({taskListContainer, onDataChange, onModeChange}) {
     this.#listComponent = taskListContainer;
@@ -27,9 +38,8 @@ export default class PointPresenter {
   init(task) {
     this.#task = task;
 
-    // const prevTaskComponent = this.#taskComponent;
-    // const prevTaskEditComponent = this.#taskEditComponent;
-    // const prevTaskBoxComponent = this.#taskBoxComponent;
+    const prevTaskComponent = this.#taskComponent;
+    const prevTaskEditComponent = this.#taskEditComponent;
 
     this.#taskEditComponent = new RoutPointEditView({
       task: this.#task,
@@ -49,22 +59,18 @@ export default class PointPresenter {
       },
     });
 
-    // if (prevTaskComponent === null || prevTaskEditComponent === null || prevTaskBoxComponent === null) {
-    render(this.#taskComponent, this.#listComponent);
-    //   return;
-    // }
+    if (prevTaskComponent === null || prevTaskEditComponent === null) {
+      render(this.#taskComponent, this.#listComponent);
+      return;
+    }
 
-    // if (this.#listComponent.contains(prevTaskComponent.element)) {
-    //   replace(this.#taskComponent, prevTaskComponent);
-    // }
+    if (this.#mode === ModeCode.DEFAULT) {
+      replace(this.#taskComponent, prevTaskComponent);
+    }
 
-    // if (this.#mode === Mode.DEFAULT) {
-    //   replace(this.#taskBoxComponent, prevTaskBoxComponent);
-    // }
-
-    // if (this.#mode === Mode.EDITING) {
-    //   replace(this.#taskEditComponent, prevTaskEditComponent);
-    // }
+    if (this.#mode === ModeCode.EDITING) {
+      replace(this.#taskEditComponent, prevTaskEditComponent);
+    }
   }
 
   destroy() {
@@ -73,7 +79,7 @@ export default class PointPresenter {
   }
 
   resetView() {
-    if (this.#mode !== Mode.DEFAULT) {
+    if (this.#mode !== ModeCode.DEFAULT) {
       this.#replaceFormToCard();
     }
   }
@@ -82,13 +88,13 @@ export default class PointPresenter {
     replace(this.#taskEditComponent, this.#taskComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#handleModeChange();
-    this.#mode = Mode.EDITING;
+    this.#mode = ModeCode.EDITING;
   }
 
   #replaceFormToCard() {
     replace(this.#taskComponent, this.#taskEditComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#mode = Mode.DEFAULT;
+    this.#mode = ModeCode.DEFAULT;
   }
 
   #removeForm() {

@@ -11,7 +11,7 @@ function createAddServices(offers) {
   ).join('');
 }
 
-function createRoutPointBoxTemplate(task) {
+function createRoutPointTemplate(task) {
   const {destinationDetails, type, offers, startDate, endDate, basePrice, isFavorite} = task;
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
@@ -65,7 +65,7 @@ export default class RoutPointView extends AbstractView {
   }
 
   get template() {
-    return createRoutPointBoxTemplate(this.#task);
+    return createRoutPointTemplate(this.#task);
   }
 
   get element() {

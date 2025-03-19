@@ -37,7 +37,7 @@ export default class ListPresenter {
 
   #handleTaskChange = (updatedTask) => {
     this.#boardTasks = updateItem(this.#boardTasks, updatedTask);
-    // this.#taskPresenters.get(updatedTask.id).init(updatedTask);
+    this.#taskPresenters.get(updatedTask.id).init(updatedTask);
   };
 
   #renderSort() {
@@ -51,11 +51,11 @@ export default class ListPresenter {
       onModeChange: this.#handleModeChange
     });
     taskPresenter.init(task);
-    // this.#taskPresenters.set(task.id, taskPresenter);
+    this.#taskPresenters.set(task.id, taskPresenter);
   }
 
-  // #clearTaskList() {
-  //   this.#taskPresenters.forEach((presenter) => presenter.destroy());
-  //   this.#taskPresenters.clear();
-  // }
+  #clearTaskList() {
+    this.#taskPresenters.forEach((presenter) => presenter.destroy());
+    this.#taskPresenters.clear();
+  }
 }
