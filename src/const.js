@@ -1,5 +1,5 @@
 /**
- * @enum {string}
+ * @enum {string} Перечисление сообщений в случае, когда точки маршрута отсутствуют
  */
 const TextNoEvent = {
   EVERYTHING: 'Click New Event to create your first point',
@@ -9,7 +9,7 @@ const TextNoEvent = {
 };
 
 /**
- * @enum {string}
+ * @enum {string} Перечисление состояний точки маршрута
  */
 const ModeCode = {
   DEFAULT: 'DEFAULT',

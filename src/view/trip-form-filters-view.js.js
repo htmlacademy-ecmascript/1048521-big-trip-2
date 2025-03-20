@@ -1,5 +1,9 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
+/**
+ * Функция для получения разметки формы фильтров
+ * @returns {string} Разметку формы фильтров
+ */
 function createTripFormFiltersTemplate() {
   return `<form class="trip-filters" action="#" method="get">
             <div class="trip-filters__filter">
@@ -23,7 +27,14 @@ function createTripFormFiltersTemplate() {
           </form>`;
 }
 
+/**
+ * @class Класс для создания формы фильтров
+ */
 export default class TripFormFiltersView extends AbstractView {
+  /**
+   * Геттер для получения разметки формы фильтров
+   * @returns {HTMLElement} Созданную форму фильтров
+   */
   get template() {
     return createTripFormFiltersTemplate();
   }

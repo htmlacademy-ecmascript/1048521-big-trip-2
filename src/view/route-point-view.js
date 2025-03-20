@@ -1,6 +1,11 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime} from '../utils.js';
 
+/**
+ * Функция для получения разметки дополнительных услуг точек маршрута
+  * @param {Array} offers Массив оферов
+ * @returns {string} Разметка списка оферов
+ */
 function createAddServices(offers) {
   return offers.map((offer) =>
     `<li class="event__offer">
@@ -11,6 +16,11 @@ function createAddServices(offers) {
   ).join('');
 }
 
+/**
+ * Функция для получения разметки точки маршрута
+ * @param {Object} task Данные точки маршрута
+ * @returns {string} Разметка точки маршрута
+ */
 function createRoutPointTemplate(task) {
   const {destinationDetails, type, offers, startDate, endDate, basePrice, isFavorite} = task;
   const favoriteClassName = isFavorite
@@ -50,12 +60,20 @@ function createRoutPointTemplate(task) {
           </li>`;
 }
 
+/**
+ * @class Класс для создания точки маршрута
+ */
 export default class RoutPointView extends AbstractView {
   #task = null;
   #handleEditClick = null;
   #element = null;
   #handleFavoriteClick = null;
 
+  /**
+   * @param {object} task Описание точки маршрута
+   * @param {function} onEditClick Колбэк-функция для обработки клика по кнопке редактирования
+   * @param {function} onFavoriteClick Колбэк-функция для обработки клика по кнопке "Избранное"
+   */
   constructor({task, onEditClick, onFavoriteClick}) {
     super();
     this.#task = task;
@@ -64,10 +82,18 @@ export default class RoutPointView extends AbstractView {
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
+  /**
+   * Геттер для получения разметки точки маршрута
+   * @returns {HTMLElement} Созданную точку маршрута
+   */
   get template() {
     return createRoutPointTemplate(this.#task);
   }
 
+  /**
+   * Геттер для получения элемента точки маршрута
+   * @returns {HTMLElement} Элемент точки маршрута
+   */
   get element() {
     if (!this.#element) {
       this.#element = super.element;
@@ -78,11 +104,19 @@ export default class RoutPointView extends AbstractView {
     return this.#element;
   }
 
+  /**
+   * Метод открытия/закрытия формы точки маршрута
+   * @param {object} event Тип события
+   */
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditClick();
   };
 
+  /**
+   * Метод добавления/удаления точки маршрута в избранное
+   * @param {object} event Тип события
+   */
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleFavoriteClick();
