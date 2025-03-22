@@ -1,5 +1,9 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
+/**
+ * Функция для получения разметки формы сортировки
+ * @returns {string} Разметку формы сортировки
+ */
 function createTripFormSortTemplate() {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             <div class="trip-sort__item  trip-sort__item--day">
@@ -29,7 +33,14 @@ function createTripFormSortTemplate() {
           </form>`;
 }
 
+/**
+ * @class Класс для создания формы сортировки
+ */
 export default class TripFormSortView extends AbstractView {
+  /**
+   * Геттер для получения разметки формы сортировки
+   * @returns {HTMLElement} Созданную форму сортировки
+   */
   get template() {
     return createTripFormSortTemplate();
   }

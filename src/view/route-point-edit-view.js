@@ -1,6 +1,15 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {showNewPointDate} from '../utils.js';
 
+/**
+ * Функция для получения разметки формы точки маршрута
+ * @param {string} type Тип точки маршрута
+ * @param {object} offers Дополнительные опции точки маршрута
+ * @param {string} startDate Время начала маршрута
+ * @param {string} endDate Время окончания маршрута
+ * @param {number} basePrice Цена маршрута
+ * @returns {string} Разметка созданноq формы
+ */
 function createAddNewPointWithout(type, offers, startDate, endDate, basePrice) {
   return `<form class="event event--edit" action="#" method="post">
             <header class="event__header">
@@ -55,6 +64,11 @@ function createAddNewPointWithout(type, offers, startDate, endDate, basePrice) {
           </form>`;
 }
 
+/**
+ * Функция для получения разметки дополнительных опций точки маршрута
+ * @param {object} offers Дополнительные опции точки маршрута
+ * @returns {string} Разметку созданной опции
+ */
 function createButtonAddServices(offers) {
   return offers.map((offer) =>
     `<div class="event__offer-selector">
@@ -68,6 +82,11 @@ function createButtonAddServices(offers) {
   ).join('');
 }
 
+/**
+ * Функция для получения разметки типов точки маршрута
+ * @param {string} type Тип точки маршрута
+ * @returns {HTMLElement} Созданный тип точки
+ */
 function createTypeWrapperServices(type) {
   return `<div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -129,42 +148,64 @@ function createTypeWrapperServices(type) {
           </div>`;
 }
 
+/**
+ * @class Класс для создания формы точки маршрута
+ */
 export default class RoutPointEditView extends AbstractView {
   #task = null;
   #handleFormSubmit = null;
   #element = null;
   #handleFormDelete = null;
 
+  /**
+   * @param {object} task Описание точки маршрута
+   * @param {function} onFormSubmit Колбэк-функция сохранения данных в форме
+   * @param {function} onDeleteForm Колбэк-функция удаления точки маршрута
+   */
   constructor({task, onFormSubmit, onDeleteForm}) {
     super();
     this.#task = task;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormDelete = onDeleteForm;
+    this.element.addEventListener('click', this.#formSubmitHandler);
   }
 
+  /**
+   * Геттер для получения разметки формы точки маршрута
+   * @returns {HTMLElement} Созданную форму
+   */
   get template() {
     const { type, offers, startDate, endDate, basePrice } = this.#task;
     return createAddNewPointWithout(type, offers, startDate, endDate, basePrice);
   }
 
+  /**
+   * Геттер для получения элемента формы точки маршрута
+   * @returns {HTMLElement} Созданную форму
+   */
   get element() {
     if (!this.#element) {
       this.#element = super.element;
       this.#element.addEventListener('submit', this.#formSubmitHandler);
-      const closeElement = this.#element.querySelector('.event__rollup-btn');
       const deleteElement = this.#element.querySelector('.event__reset-btn');
-      closeElement.addEventListener('click', this.#formSubmitHandler);
       deleteElement.addEventListener('click', this.#formDeleteHandler);
     }
     return this.#element;
   }
 
+  /**
+   * Метод для сохранения данных в форме
+   * @param {object} event Тип события
+   */
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(this.#task);
   };
 
+  /**
+   * Метод для удаления формы
+   */
   #formDeleteHandler = () => {
-    this.#handleFormDelete();
+    // this.#handleFormDelete();
   };
 }

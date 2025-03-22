@@ -1,5 +1,9 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
+/**
+ * Функция для получения разметки блока информации о поездке
+ * @returns {string} Разметку блока информации о поездке
+ */
 function createTripInfoTemplate() {
   return `<section class="trip-main__trip-info  trip-info">
             <div class="trip-info__main">
@@ -12,7 +16,14 @@ function createTripInfoTemplate() {
           </section>`;
 }
 
+/**
+ * @class Класс для создания блока информации о поездке
+ */
 export default class TripInfoView extends AbstractView {
+  /**
+   * Геттер для получения разметки блока информации о поездке
+   * @returns {HTMLElement} Созданную блок информации о поездке
+   */
   get template() {
     return createTripInfoTemplate();
   }
