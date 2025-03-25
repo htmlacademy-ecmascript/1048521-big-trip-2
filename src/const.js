@@ -1,3 +1,13 @@
+
+/**
+ * @enum {string} Перечисление сообщений в случае, когда точки маршрута отсутствуют
+ */
+const SortType = {
+  DAY: 'day',
+  DATE_TIME: 'date-time',
+  DATE_PRICE: 'date-price',
+};
+
 /**
  * @enum {string} Перечисление сообщений в случае, когда точки маршрута отсутствуют
  */
@@ -16,4 +26,4 @@ const ModeCode = {
   EDITING: 'EDITING',
 };
 
-export {TextNoEvent, ModeCode};
+export {TextNoEvent, ModeCode, SortType};

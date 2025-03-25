@@ -13,8 +13,8 @@ export default class ListPresenter {
   #boardContainer = null;
   #listComponent = new TripEventsListView;
   #boardTasks = [];
-  #sortElement = new TripFormSortView;
   #taskPresenters = new Map();
+  #sortElement = null;
 
   /**
    * @param {HTMLElement} boardContainer Контейнер для отображения списка точек маршрута
@@ -57,10 +57,16 @@ export default class ListPresenter {
     this.#taskPresenters.get(updatedTask.id).init(updatedTask);
   };
 
+  #handleSortTypeChange = () => {
+  };
+
   /**
    * Метод отрисовки точки маршрута
    */
   #renderSort() {
+    this.#sortElement = new TripFormSortView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
     render(this.#sortElement, this.#listComponent.element, RenderPosition.AFTERBEGIN);
   }
 
