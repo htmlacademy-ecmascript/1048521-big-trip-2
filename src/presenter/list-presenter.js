@@ -3,7 +3,8 @@ import {remove, render, RenderPosition} from '../framework/render.js';
 import NoTaskView from '../view/no-task-view.js';
 import TripFormSortView from '../view/trip-form-sort-view.js';
 import PointPresenter from './point-presenter.js';
-import {updateItem} from '../utils.js';
+import {updateItem, sortTaskTime, sortTaskPrice} from '../utils.js';
+import {SortType} from '../const.js';
 
 /**
  * @class Класс для создания и управления списком точек маршрута
@@ -13,8 +14,10 @@ export default class ListPresenter {
   #boardContainer = null;
   #listComponent = new TripEventsListView;
   #boardTasks = [];
-  #sortElement = new TripFormSortView;
   #taskPresenters = new Map();
+  #sortElement = null;
+  #currentSortType = SortType.DAY;
+  #sourcedBoardTasks = [];
 
   /**
    * @param {HTMLElement} boardContainer Контейнер для отображения списка точек маршрута
@@ -30,15 +33,14 @@ export default class ListPresenter {
    */
   init() {
     this.#boardTasks = [...this.#tasksModel.getTasks()];
+    this.#sourcedBoardTasks = [...this.#tasksModel.getTasks()];
     render(this.#listComponent, this.#boardContainer);
     this.#renderSort();
     if (this.#boardTasks.every((task) => task.isArchive)) {
       render(new NoTaskView(), this.#listComponent.element);
       remove(this.#sortElement);
     }
-    for (let i = 0; i < this.#boardTasks.length; i++) {
-      this.#renderTask(this.#boardTasks[i]);
-    }
+    this.#renderTaskList();
   }
 
   /**
@@ -54,13 +56,49 @@ export default class ListPresenter {
    */
   #handleTaskChange = (updatedTask) => {
     this.#boardTasks = updateItem(this.#boardTasks, updatedTask);
+    this.#sourcedBoardTasks = updateItem(this.#sourcedBoardTasks, updatedTask);
     this.#taskPresenters.get(updatedTask.id).init(updatedTask);
+  };
+
+  /**
+   * Метод выбора специфичных типов сортировки
+   * @param {string} sortType Тип сортировки
+   */
+  #sortTasks(sortType) {
+    switch (sortType) {
+      case 'date-time':
+        this.#boardTasks.sort(sortTaskTime);
+        break;
+      case 'date-price':
+        this.#boardTasks.sort(sortTaskPrice);
+        break;
+      case 'day':
+      default:
+        this.#boardTasks = [...this.#sourcedBoardTasks];
+    }
+    this.#currentSortType = sortType;
+  }
+
+  /**
+   * Метод изменения типа сортировки
+   * @param {string} sortType Тип сортировки
+   */
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#sortTasks(sortType);
+    this.#clearTaskList();
+    this.#renderTaskList();
   };
 
   /**
    * Метод отрисовки точки маршрута
    */
   #renderSort() {
+    this.#sortElement = new TripFormSortView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
     render(this.#sortElement, this.#listComponent.element, RenderPosition.AFTERBEGIN);
   }
 
@@ -76,6 +114,15 @@ export default class ListPresenter {
     });
     taskPresenter.init(task);
     this.#taskPresenters.set(task.id, taskPresenter);
+  }
+
+  /**
+ * Функция, котрая рендерит список точек маршрута
+ */
+  #renderTaskList() {
+    for (let i = 0; i < this.#boardTasks.length; i++) {
+      this.#renderTask(this.#boardTasks[i]);
+    }
   }
 
   /**

@@ -24,6 +24,7 @@ const listPresenter = new ListPresenter({
   boardContainer: tripEventsSectionElement,
   tasksModel,
 });
-if(tasksModel.getTasks().length !== 0){
+
+if(tasksModel.getTasks().length){
   listPresenter.init();
 }
