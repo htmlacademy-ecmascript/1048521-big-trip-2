@@ -49,7 +49,6 @@ function showFullDateTime(dueDate) {
   return dueDate ? dayjs.utc(dueDate).format(FULL_DATE_TIME_FORMAT) : '';
 }
 
-
 /**
  * Функция создает дату в формате  "MMM D"
  * @param {object} dueDate Дата в виде строки
@@ -91,4 +90,42 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-export {updateItem, getRandomArrayElement, humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate};
+/**
+ * Функция , которая преобразует длительность из формата "XH YM" в общее количество минут
+ * @param {string} duration Длительность маршрута в формате "XH YM"
+ * @returns {number} Общее количество минут
+ */
+function getDuration(duration) {
+  const [hoursPart, minutesPart] = duration.split(' ');
+  const hours = parseInt(hoursPart.replace('H', ''), 10) || 0;
+  const minutes = parseInt(minutesPart.replace('M', ''), 10) || 0;
+  return hours * 60 + minutes;
+}
+
+/**
+   * Функция сравнения точек маршрута по длительности (на убывание)
+   * @param {object} taskA Первая точка маршрута
+   * @param {object} taskB Вторая точка маршрута
+   * @returns {number} Возвращает время в минутах
+   */
+function sortTaskTime(taskA, taskB) {
+  const durationA = calculateTripDuration(taskA.startDate, taskA.endDate);
+  const durationB = calculateTripDuration(taskB.startDate, taskB.endDate);
+
+  const minutesA = getDuration(durationA);
+  const minutesB = getDuration(durationB);
+  return minutesB - minutesA;
+}
+
+/**
+   * Функция сравнения точек маршрута по цене (на убывание)
+   * @param {object} taskA Первая точка маршрута
+   * @param {object} taskB Вторая точка маршрута
+   * @returns {number} Возвращает разницу в цене
+   */
+function sortTaskPrice(taskA, taskB) {
+  return taskB.basePrice - taskA.basePrice;
+}
+
+
+export {updateItem, getRandomArrayElement, humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate, sortTaskPrice, sortTaskTime};
