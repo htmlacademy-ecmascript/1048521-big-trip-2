@@ -2,6 +2,33 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {showNewPointDate} from '../utils.js';
 
 /**
+ * Функция получения разметки секции описания и фотографий
+ * @param {object} destinationDetails Описание пункта назначения
+ * @returns {string} Текст описания
+ */
+function createDestinationSection(destinationDetails) {
+  if (!destinationDetails || !destinationDetails.description) {
+    return '';
+  }
+  const picturesMarkup = destinationDetails.pictures?.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">
+  `).join('') || '';
+
+  return `
+    <section class="event__section event__section--destination">
+      <h3 class="event__section-title event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${destinationDetails.description}</p>
+      ${picturesMarkup ? `
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${picturesMarkup}
+          </div>
+        </div>
+      ` : ''}
+    </section>
+  `;
+}
+
+/**
  * Функция для получения разметки формы точки маршрута
  * @param {string} type Тип точки маршрута
  * @param {object} offers Дополнительные опции точки маршрута
@@ -11,7 +38,7 @@ import {showNewPointDate} from '../utils.js';
  * @returns {string} Разметка созданноq формы
  */
 function createAddNewPointWithout(state) {
-  const {type, offers, startDate, endDate, basePrice} = state;
+  const {type, offers, startDate, endDate, basePrice, destinationDetails} = state;
   return `<form class="event event--edit" action="#" method="post">
             <header class="event__header">
 
@@ -61,6 +88,7 @@ function createAddNewPointWithout(state) {
                   </div>
                 ` : ''}
               </section>
+              ${createDestinationSection(destinationDetails)}
             </section>
           </form>`;
 }
@@ -144,7 +172,7 @@ export default class RoutPointEditView extends AbstractStatefulView {
    * @returns {HTMLElement} Созданную форму
    */
   get template() {
-    console.log(this._state);
+    // console.log(this._state);
     return createAddNewPointWithout(this._state);
   }
 
