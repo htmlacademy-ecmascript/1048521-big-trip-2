@@ -214,6 +214,7 @@ export default class RoutPointEditView extends AbstractStatefulView {
     evt.preventDefault();
     this.#handleFormClose();
   };
+
   /**
    * Метод для удаления формы
    * @param {object} event Тип события
