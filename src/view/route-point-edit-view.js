@@ -144,7 +144,16 @@ export default class RoutPointEditView extends AbstractStatefulView {
    * @returns {HTMLElement} Созданную форму
    */
   get template() {
+    console.log(this._state);
     return createAddNewPointWithout(this._state);
+  }
+
+  /**
+   * Метод сброса формы до изначального состояния
+   * @param {object} task Исходные данные точки маршрута
+   */
+  reset(task) {
+    this.updateElement(RoutPointEditView.parseTaskToState(task));
   }
 
   /**

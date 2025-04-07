@@ -83,6 +83,7 @@ export default class PointPresenter {
   */
   resetView() {
     if (this.#mode !== ModeCode.DEFAULT) {
+      this.#taskEditComponent.reset(this.#task);
       this.#replaceFormToCard();
     }
   }
