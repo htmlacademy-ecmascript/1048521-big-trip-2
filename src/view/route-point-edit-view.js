@@ -123,17 +123,19 @@ function createTypeWrapperServices(type) {
 export default class RoutPointEditView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleFormDelete = null;
+  #handleFormClose = null;
 
   /**
    * @param {object} task Описание точки маршрута
    * @param {function} onFormSubmit Колбэк-функция сохранения данных в форме
    * @param {function} onDeleteForm Колбэк-функция удаления точки маршрута
    */
-  constructor({task, onFormSubmit, onDeleteForm}) {
+  constructor({task, onFormSubmit, onDeleteForm, onFormClose}) {
     super();
     this._setState(RoutPointEditView.parseTaskToState(task));
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormDelete = onDeleteForm;
+    this.#handleFormClose = onFormClose;
     this._restoreHandlers();
   }
 
@@ -145,12 +147,6 @@ export default class RoutPointEditView extends AbstractStatefulView {
     return createAddNewPointWithout(this._state);
   }
 
-  reset(task) {
-    this.updateElement(
-      TaskEditView.parseTaskToState(task),
-    );
-  }
-
   /**
   * Метод для восстановления обработчиков после перерисовки элемента
   */
@@ -160,6 +156,8 @@ export default class RoutPointEditView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#formCloseHandler);
   }
 
   /**
@@ -172,11 +170,20 @@ export default class RoutPointEditView extends AbstractStatefulView {
   };
 
   /**
+   * Метод закрытия формы
+   * @param {object} evt Событие клика по кнопке закрытия
+   */
+  #formCloseHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormClose();
+  };
+  /**
    * Метод для удаления формы
    * @param {object} event Тип события
    */
-  #formDeleteHandler = () => {
-    // this.#handleFormDelete();
+  #formDeleteHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormDelete();
   };
 
   /**
