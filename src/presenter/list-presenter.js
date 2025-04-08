@@ -72,7 +72,6 @@ export default class ListPresenter {
       case 'date-price':
         this.#boardTasks.sort(sortTaskPrice);
         break;
-      case 'day':
       default:
         this.#boardTasks = [...this.#sourcedBoardTasks];
     }

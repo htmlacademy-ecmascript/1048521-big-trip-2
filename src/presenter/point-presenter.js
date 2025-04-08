@@ -42,7 +42,8 @@ export default class PointPresenter {
       onFormSubmit: this.#handleFormSubmit,
       onDeleteForm: () => {
         this.#removeForm();
-      }
+      },
+      onFormClose: this.#formCloseHandler,
     });
 
     this.#taskComponent = new RoutPointView({
@@ -82,6 +83,7 @@ export default class PointPresenter {
   */
   resetView() {
     if (this.#mode !== ModeCode.DEFAULT) {
+      this.#taskEditComponent.reset(this.#task);
       this.#replaceFormToCard();
     }
   }
@@ -137,6 +139,13 @@ export default class PointPresenter {
    */
   #handleFormSubmit = (task) => {
     this.#handleDataChange(task);
+    this.#replaceFormToCard();
+  };
+
+  /**
+   * Метод закрытия формы
+   */
+  #formCloseHandler = () => {
     this.#replaceFormToCard();
   };
 }

@@ -1,5 +1,32 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {showNewPointDate} from '../utils.js';
+
+/**
+ * Функция получения разметки секции описания и фотографий
+ * @param {object} destinationDetails Описание пункта назначения
+ * @returns {string} Текст описания
+ */
+function createDestinationSection(destinationDetails) {
+  if (!destinationDetails || !destinationDetails.description) {
+    return '';
+  }
+  const picturesMarkup = destinationDetails.pictures?.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">
+  `).join('') || '';
+
+  return `
+    <section class="event__section event__section--destination">
+      <h3 class="event__section-title event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${destinationDetails.description}</p>
+      ${picturesMarkup ? `
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${picturesMarkup}
+          </div>
+        </div>
+      ` : ''}
+    </section>
+  `;
+}
 
 /**
  * Функция для получения разметки формы точки маршрута
@@ -10,7 +37,8 @@ import {showNewPointDate} from '../utils.js';
  * @param {number} basePrice Цена маршрута
  * @returns {string} Разметка созданноq формы
  */
-function createAddNewPointWithout(type, offers, startDate, endDate, basePrice) {
+function createAddNewPointWithout(state) {
+  const {type, offers, startDate, endDate, basePrice, destinationDetails} = state;
   return `<form class="event event--edit" action="#" method="post">
             <header class="event__header">
 
@@ -60,6 +88,7 @@ function createAddNewPointWithout(type, offers, startDate, endDate, basePrice) {
                   </div>
                 ` : ''}
               </section>
+              ${createDestinationSection(destinationDetails)}
             </section>
           </form>`;
 }
@@ -88,6 +117,7 @@ function createButtonAddServices(offers) {
  * @returns {HTMLElement} Созданный тип точки
  */
 function createTypeWrapperServices(type) {
+  const typeElements = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
   return `<div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
@@ -98,51 +128,18 @@ function createTypeWrapperServices(type) {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-
-                <div class="event__type-item">
-                  <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                  <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                  <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                  <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                  <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                  <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                  <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                  <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                  <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                  <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-                </div>
+                ${typeElements.map((typeOption) => `
+                  <div class="event__type-item">
+                    <input id="event-type-${typeOption}"
+                      class="event__type-input visually-hidden"
+                      type="radio"
+                      name="event-type"
+                      value="${typeOption}"
+                      ${typeOption === type ? 'checked' : ''}>
+                    <label class="event__type-label event__type-label--${typeOption}"
+                      for="event-type-${typeOption}">${typeOption}</label>
+                  </div>
+                `).join('')}
               </fieldset>
             </div>
           </div>`;
@@ -151,23 +148,23 @@ function createTypeWrapperServices(type) {
 /**
  * @class Класс для создания формы точки маршрута
  */
-export default class RoutPointEditView extends AbstractView {
-  #task = null;
+export default class RoutPointEditView extends AbstractStatefulView {
   #handleFormSubmit = null;
-  #element = null;
   #handleFormDelete = null;
+  #handleFormClose = null;
 
   /**
    * @param {object} task Описание точки маршрута
    * @param {function} onFormSubmit Колбэк-функция сохранения данных в форме
    * @param {function} onDeleteForm Колбэк-функция удаления точки маршрута
    */
-  constructor({task, onFormSubmit, onDeleteForm}) {
+  constructor({task, onFormSubmit, onDeleteForm, onFormClose}) {
     super();
-    this.#task = task;
+    this._setState(RoutPointEditView.parseTaskToState(task));
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormDelete = onDeleteForm;
-    this.element.addEventListener('click', this.#formSubmitHandler);
+    this.#handleFormClose = onFormClose;
+    this._restoreHandlers();
   }
 
   /**
@@ -175,22 +172,29 @@ export default class RoutPointEditView extends AbstractView {
    * @returns {HTMLElement} Созданную форму
    */
   get template() {
-    const { type, offers, startDate, endDate, basePrice } = this.#task;
-    return createAddNewPointWithout(type, offers, startDate, endDate, basePrice);
+    // console.log(this._state);
+    return createAddNewPointWithout(this._state);
   }
 
   /**
-   * Геттер для получения элемента формы точки маршрута
-   * @returns {HTMLElement} Созданную форму
+   * Метод сброса формы до изначального состояния
+   * @param {object} task Исходные данные точки маршрута
    */
-  get element() {
-    if (!this.#element) {
-      this.#element = super.element;
-      this.#element.addEventListener('submit', this.#formSubmitHandler);
-      const deleteElement = this.#element.querySelector('.event__reset-btn');
-      deleteElement.addEventListener('click', this.#formDeleteHandler);
-    }
-    return this.#element;
+  reset(task) {
+    this.updateElement(RoutPointEditView.parseTaskToState(task));
+  }
+
+  /**
+  * Метод для восстановления обработчиков после перерисовки элемента
+  */
+  _restoreHandlers() {
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#formCloseHandler);
   }
 
   /**
@@ -199,13 +203,75 @@ export default class RoutPointEditView extends AbstractView {
    */
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#task);
+    this.#handleFormSubmit(RoutPointEditView.parseStateToTask(this._state));
+  };
+
+  /**
+   * Метод закрытия формы
+   * @param {object} evt Событие клика по кнопке закрытия
+   */
+  #formCloseHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormClose();
   };
 
   /**
    * Метод для удаления формы
+   * @param {object} event Тип события
    */
-  #formDeleteHandler = () => {
-    // this.#handleFormDelete();
+  #formDeleteHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormDelete();
   };
+
+  /**
+   * Метод изменения типа маршрута
+   * @param {object} evt Событие изменения типа
+   */
+  #typeChangeHandler = (evt) => {
+    if (evt.target.matches('.event__type-input')) {
+      const newType = evt.target.value;
+      this.updateElement({
+        type: newType,
+      });
+    }
+  };
+
+  /**
+   * Метод изменения пункта назначения
+   * @param {object} evt Событие изменения значения поля
+   */
+  #destinationChangeHandler = (evt) => {
+    this.updateElement({
+      destination: evt.target.value
+    });
+  };
+
+  /**
+   * Методод изменения цены в форме
+   * @param {object} evt Событие ввода в поле цены
+   */
+  #priceInputHandler = (evt) => {
+    this._setState({
+      basePrice: evt.target.value
+    });
+  };
+
+  /**
+   * Метод изменения данных точки маршрута в состояние
+   * @param {object} task Данные задачи
+   * @returns {object} Состояние компонента
+   */
+  static parseTaskToState(task) {
+    return structuredClone(task);
+  }
+
+  /**
+   * Метод изменения состояния в данные точки маршрута
+   * @param {object} state Состояние компонента
+   * @returns {object} Данные задачи
+   */
+  static parseStateToTask(state) {
+    return structuredClone(state);
+  }
 }
