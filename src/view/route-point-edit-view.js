@@ -1,5 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {showNewPointDate} from '../utils.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 /**
  * Функция получения разметки секции описания и фотографий
@@ -152,6 +154,8 @@ export default class RoutPointEditView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleFormDelete = null;
   #handleFormClose = null;
+  #startDatepicker = null;
+  #endDatepicker = null;
 
   /**
    * @param {object} task Описание точки маршрута
@@ -165,6 +169,19 @@ export default class RoutPointEditView extends AbstractStatefulView {
     this.#handleFormDelete = onDeleteForm;
     this.#handleFormClose = onFormClose;
     this._restoreHandlers();
+  }
+
+  /**
+   * Метод для удаления элемента и календаря
+   */
+  removeElement() {
+    super.removeElement();
+    if (this.#startDatepicker) {
+      this.#startDatepicker.destroy();
+    }
+    if (this.#endDatepicker) {
+      this.#endDatepicker.destroy();
+    }
   }
 
   /**
@@ -195,6 +212,7 @@ export default class RoutPointEditView extends AbstractStatefulView {
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#formCloseHandler);
+    this.#setDatepicker();
   }
 
   /**
@@ -256,6 +274,54 @@ export default class RoutPointEditView extends AbstractStatefulView {
       basePrice: evt.target.value
     });
   };
+
+  /**
+   * Методод создания экземпляра datepicker для инпутов  с датами
+   */
+  #setDatepicker() {
+    const startTimeInput = this.element.querySelector('#event-start-time-1');
+    const endTimeInput = this.element.querySelector('#event-end-time-1');
+
+    this.#startDatepicker = flatpickr(startTimeInput, {
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
+      defaultDate: this._state.startDate,
+      onChange: (selectedDates) => {
+        this.#startDateChangeHandler(selectedDates);
+      },
+    });
+
+    this.#endDatepicker = flatpickr(endTimeInput, {
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
+      defaultDate: this._state.endDate,
+      minDate: this._state.startDate,
+      onChange: (selectedDates) => {
+        this.#endDateChangeHandler(selectedDates);
+      },
+    });
+  }
+
+  /**
+  * Метод изменения даты начала поездки
+  * @param {object} selectedDates Выбранная дата
+  */
+  #startDateChangeHandler(selectedDates) {
+    if (selectedDates.length > 0) {
+      this._state.startDate = selectedDates[0];
+      this.#endDatepicker.set('minDate', this._state.startDate);
+    }
+  }
+
+  /**
+  * Метод изменения даты конца поездки
+  * @param {object} selectedDates Выбранная дата
+  */
+  #endDateChangeHandler(selectedDates) {
+    if (selectedDates.length > 0) {
+      this._state.endDate = selectedDates[0];
+    }
+  }
 
   /**
    * Метод изменения данных точки маршрута в состояние
