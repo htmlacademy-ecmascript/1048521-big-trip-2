@@ -239,7 +239,7 @@ export default class RoutPointEditView extends AbstractStatefulView {
    */
   #formDeleteHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormDelete();
+    this.#handleFormDelete(RoutPointEditView.parseStateToTask(this._state));
   };
 
   /**

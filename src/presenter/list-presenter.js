@@ -3,8 +3,8 @@ import {remove, render, RenderPosition} from '../framework/render.js';
 import NoTaskView from '../view/no-task-view.js';
 import TripFormSortView from '../view/trip-form-sort-view.js';
 import PointPresenter from './point-presenter.js';
-import {updateItem, sortTaskTime, sortTaskPrice} from '../utils.js';
-import {SortType} from '../const.js';
+import {sortTaskTime, sortTaskPrice} from '../utils.js';
+import {SortType, UpdateType, UserAction} from '../const.js';
 
 /**
  * @class Класс для создания и управления списком точек маршрута
@@ -13,11 +13,11 @@ export default class ListPresenter {
   #tasksModel = null;
   #boardContainer = null;
   #listComponent = new TripEventsListView;
-  #boardTasks = [];
   #taskPresenters = new Map();
   #sortElement = null;
   #currentSortType = SortType.DAY;
-  #sourcedBoardTasks = [];
+  #noTaskComponent = new NoTaskView();
+  #loadMoreButtonComponent = null;
 
   /**
    * @param {HTMLElement} boardContainer Контейнер для отображения списка точек маршрута
@@ -26,21 +26,29 @@ export default class ListPresenter {
   constructor({boardContainer, tasksModel}) {
     this.#boardContainer = boardContainer;
     this.#tasksModel = tasksModel;
+    this.#tasksModel.addObserver(this.#handleModelEvent);
   }
+
+  /**
+  * Метод для получения массива точек маршрута
+  * @returns {object} Список точек маршрута из модели
+  */
+  get tasks() {
+    switch (this.#currentSortType) {
+      case 'date-time':
+        return [...this.#tasksModel.getTasks()].sort(sortTaskTime);
+      case 'date-price':
+        return [...this.#tasksModel.getTasks()].sort(sortTaskPrice);
+    }
+    return this.#tasksModel.getTasks();
+  }
+
 
   /**
    * Метод, который инициализирует отображение точек маршрута
    */
   init() {
-    this.#boardTasks = [...this.#tasksModel.getTasks()];
-    this.#sourcedBoardTasks = [...this.#tasksModel.getTasks()];
-    render(this.#listComponent, this.#boardContainer);
-    this.#renderSort();
-    if (this.#boardTasks.every((task) => task.isArchive)) {
-      render(new NoTaskView(), this.#listComponent.element);
-      remove(this.#sortElement);
-    }
-    this.#renderTaskList();
+    this.#renderBoard();
   }
 
   /**
@@ -50,33 +58,37 @@ export default class ListPresenter {
     this.#taskPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  /**
-   * Метод обновления точки маршрута
-   * @param {object} updatedTask Обновленные данные
-   */
-  #handleTaskChange = (updatedTask) => {
-    this.#boardTasks = updateItem(this.#boardTasks, updatedTask);
-    this.#sourcedBoardTasks = updateItem(this.#sourcedBoardTasks, updatedTask);
-    this.#taskPresenters.get(updatedTask.id).init(updatedTask);
+
+  #handleViewAction = (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_TASK:
+        this.#tasksModel.updateTask(updateType, update);
+        break;
+      case UserAction.ADD_TASK:
+        this.#tasksModel.addTask(updateType, update);
+        break;
+      case UserAction.DELETE_TASK:
+        this.#tasksModel.deleteTask(updateType, update);
+        break;
+    }
   };
 
-  /**
-   * Метод выбора специфичных типов сортировки
-   * @param {string} sortType Тип сортировки
-   */
-  #sortTasks(sortType) {
-    switch (sortType) {
-      case 'date-time':
-        this.#boardTasks.sort(sortTaskTime);
+  #handleModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#taskPresenters.get(data.id).init(data);
         break;
-      case 'date-price':
-        this.#boardTasks.sort(sortTaskPrice);
+      case UpdateType.MINOR:
+        this.#clearBoard();
+        this.#renderBoard();
         break;
-      default:
-        this.#boardTasks = [...this.#sourcedBoardTasks];
+      case UpdateType.MAJOR:
+        this.#clearBoard({resetSortType: true});
+        this.#renderBoard();
+        break;
     }
-    this.#currentSortType = sortType;
-  }
+  };
+
 
   /**
    * Метод изменения типа сортировки
@@ -86,16 +98,17 @@ export default class ListPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
-    this.#sortTasks(sortType);
-    this.#clearTaskList();
-    this.#renderTaskList();
+    this.#currentSortType = sortType;
+    this.#clearBoard({resetRenderedTaskCount: true});
+    this.#renderBoard();
   };
 
   /**
-   * Метод отрисовки точки маршрута
+   * Метод сортировки точек маршрута
    */
   #renderSort() {
     this.#sortElement = new TripFormSortView({
+      currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange
     });
     render(this.#sortElement, this.#listComponent.element, RenderPosition.AFTERBEGIN);
@@ -108,7 +121,7 @@ export default class ListPresenter {
   #renderTask(task) {
     const taskPresenter = new PointPresenter({
       taskListContainer: this.#listComponent.element,
-      onDataChange: this.#handleTaskChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange
     });
     taskPresenter.init(task);
@@ -119,16 +132,28 @@ export default class ListPresenter {
  * Функция, котрая рендерит список точек маршрута
  */
   #renderTaskList() {
-    for (let i = 0; i < this.#boardTasks.length; i++) {
-      this.#renderTask(this.#boardTasks[i]);
+    for (let i = 0; i < this.tasks.length; i++) {
+      this.#renderTask(this.tasks[i]);
     }
   }
 
-  /**
-   * Метод очищения списка точек маршрута при помощи удаления презентеров
-   */
-  #clearTaskList() {
+  #clearBoard({resetSortType = false} = {}) {
     this.#taskPresenters.forEach((presenter) => presenter.destroy());
     this.#taskPresenters.clear();
+    remove(this.#sortElement);
+    remove(this.#noTaskComponent);
+    remove(this.#loadMoreButtonComponent);
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
+    }
+  }
+
+  #renderBoard() {
+    render(this.#listComponent, this.#boardContainer);
+    this.#renderSort();
+    if (this.tasks.every((task) => task.isArchive)) {
+      remove(this.#sortElement);
+    }
+    this.#renderTaskList();
   }
 }

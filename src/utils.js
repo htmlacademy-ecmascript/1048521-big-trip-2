@@ -81,16 +81,6 @@ function calculateTripDuration(start, end) {
 }
 
 /**
-   * Функция обновления точки маршрута, если совпадает id
-   * @param {object} items Старые данные
-   * @param {object} update Обновленные данные
-   * @returns {Array} - Новый массив с обновленной точкой маршрута
-   */
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
-
-/**
  * Функция , которая преобразует длительность из формата "XH YM" в общее количество минут
  * @param {string} duration Длительность маршрута в формате "XH YM"
  * @returns {number} Общее количество минут
@@ -128,4 +118,4 @@ function sortTaskPrice(taskA, taskB) {
 }
 
 
-export {updateItem, getRandomArrayElement, humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate, sortTaskPrice, sortTaskTime};
+export {getRandomArrayElement, humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate, sortTaskPrice, sortTaskTime};

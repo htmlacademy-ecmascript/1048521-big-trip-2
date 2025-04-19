@@ -3,6 +3,7 @@ import RoutPointView from '../view/route-point-view.js';
 import {remove, render, replace} from '../framework/render.js';
 import RoutPointEditView from '../view/route-point-edit-view.js';
 import {ModeCode} from '../const.js';
+import {UserAction, UpdateType} from '../const.js';
 
 /**
  * @class Класс для создания и управления точкой маршрута
@@ -130,7 +131,11 @@ export default class PointPresenter {
    * Метод добавления/удаления точки маршрута в избранное
    */
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#task, isFavorite: !this.#task.isFavorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_TASK,
+      UpdateType.MINOR,
+      {...this.#task, isFavorite: !this.#task.isFavorite},
+    );
   };
 
   /**
@@ -138,7 +143,11 @@ export default class PointPresenter {
    * @param {object} task Данные точки маршрута
    */
   #handleFormSubmit = (task) => {
-    this.#handleDataChange(task);
+    this.#handleDataChange(
+      UserAction.UPDATE_TASK,
+      UpdateType.MINOR,
+      task,
+    );
     this.#replaceFormToCard();
   };
 
