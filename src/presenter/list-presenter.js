@@ -5,6 +5,7 @@ import TripFormSortView from '../view/trip-form-sort-view.js';
 import PointPresenter from './point-presenter.js';
 import {sortTaskTime, sortTaskPrice} from '../utils.js';
 import {SortType, UpdateType, UserAction} from '../const.js';
+import {filter} from '../utils.js';
 
 /**
  * @class Класс для создания и управления списком точек маршрута
@@ -18,14 +19,17 @@ export default class ListPresenter {
   #currentSortType = SortType.DAY;
   #noTaskComponent = new NoTaskView();
   #loadMoreButtonComponent = null;
+  #filterModel = null;
 
   /**
    * @param {HTMLElement} boardContainer Контейнер для отображения списка точек маршрута
    * @param {Array} tasksModel Массив с данными для точек маршрута
    */
-  constructor({boardContainer, tasksModel}) {
+  constructor({boardContainer, tasksModel, filterModel}) {
     this.#boardContainer = boardContainer;
     this.#tasksModel = tasksModel;
+    this.#filterModel = filterModel;
+    this.#filterModel.addObserver(this.#handleModelEvent);
     this.#tasksModel.addObserver(this.#handleModelEvent);
   }
 
@@ -34,15 +38,18 @@ export default class ListPresenter {
   * @returns {object} Список точек маршрута из модели
   */
   get tasks() {
+    const filterType = this.#filterModel.filter;
+    const tasks = this.#tasksModel.tasks;
+    const filteredTasks = filter[filterType] ? filter[filterType](tasks) : [];
+
     switch (this.#currentSortType) {
       case 'date-time':
-        return [...this.#tasksModel.getTasks()].sort(sortTaskTime);
+        return filteredTasks.sort(sortTaskTime);
       case 'date-price':
-        return [...this.#tasksModel.getTasks()].sort(sortTaskPrice);
+        return filteredTasks.sort(sortTaskPrice);
     }
-    return this.#tasksModel.getTasks();
+    return filteredTasks;
   }
-
 
   /**
    * Метод, который инициализирует отображение точек маршрута
@@ -150,10 +157,15 @@ export default class ListPresenter {
 
   #renderBoard() {
     render(this.#listComponent, this.#boardContainer);
-    this.#renderSort();
-    if (this.tasks.every((task) => task.isArchive)) {
+
+    if (this.tasks.length === 0) {
+      this.#noTaskComponent = new NoTaskView();
+      render(this.#noTaskComponent, this.#listComponent.element);
       remove(this.#sortElement);
+      return;
     }
+
+    this.#renderSort();
     this.#renderTaskList();
   }
 }

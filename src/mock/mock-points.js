@@ -3,6 +3,24 @@ import {nanoid} from 'nanoid';
 
 const mockPoints = [
   {
+    basePrice: 3000,
+    dateFrom: '2025-04-19T10:00:00.000Z',
+    dateTo: '2025-04-25T23:00:00.000Z',
+    destination: 'cfe416cq-10xa-ye10-8077-2fs9a01edcas',
+    isFavorite: true,
+    offers: ['b4c3e4e6-8877-88ce-b747-e556604fgd95'],
+    type: 'flight'
+  },
+  {
+    basePrice: 1000,
+    dateFrom: '2025-04-21T10:00:00.000Z',
+    dateTo: '2025-04-22T23:00:00.000Z',
+    destination: 'cfe416cq-10xa-ye10-8077-2fs9a01edcas',
+    isFavorite: true,
+    offers: ['b4c3e4e6-8877-88ce-b747-e556604fgd95'],
+    type: 'flight'
+  },
+  {
     basePrice: 900,
     dateFrom: '2020-08-11T22:55:56.845Z',
     dateTo: '2020-08-11T23:22:13.375Z',

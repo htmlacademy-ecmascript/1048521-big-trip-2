@@ -9,6 +9,16 @@ const SortType = {
 };
 
 /**
+ * @enum {string} Перечисление фильтров
+ */
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+/**
  * @enum {string} Перечисление сообщений в случае, когда точки маршрута отсутствуют
  */
 const TextNoEvent = {
@@ -38,4 +48,4 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export {TextNoEvent, ModeCode, SortType, UpdateType, UserAction};
+export {TextNoEvent, ModeCode, SortType, FilterType, UpdateType, UserAction};
