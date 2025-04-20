@@ -4,7 +4,7 @@ import NoTaskView from '../view/no-task-view.js';
 import TripFormSortView from '../view/trip-form-sort-view.js';
 import PointPresenter from './point-presenter.js';
 import {sortTaskTime, sortTaskPrice} from '../utils.js';
-import {SortType, UpdateType, UserAction} from '../const.js';
+import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 import {filter} from '../utils.js';
 
 /**
@@ -17,9 +17,10 @@ export default class ListPresenter {
   #taskPresenters = new Map();
   #sortElement = null;
   #currentSortType = SortType.DAY;
-  #noTaskComponent = new NoTaskView();
+  #noTaskComponent = null;
   #loadMoreButtonComponent = null;
   #filterModel = null;
+  #filterType = FilterType.EVERYTHING;
 
   /**
    * @param {HTMLElement} boardContainer Контейнер для отображения списка точек маршрута
@@ -38,9 +39,9 @@ export default class ListPresenter {
   * @returns {object} Список точек маршрута из модели
   */
   get tasks() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const tasks = this.#tasksModel.tasks;
-    const filteredTasks = filter[filterType] ? filter[filterType](tasks) : [];
+    const filteredTasks = filter[this.#filterType](tasks);
 
     switch (this.#currentSortType) {
       case 'date-time':
@@ -159,7 +160,9 @@ export default class ListPresenter {
     render(this.#listComponent, this.#boardContainer);
 
     if (this.tasks.length === 0) {
-      this.#noTaskComponent = new NoTaskView();
+      this.#noTaskComponent = new NoTaskView({
+        filterType: this.#filterType
+      });
       render(this.#noTaskComponent, this.#listComponent.element);
       remove(this.#sortElement);
       return;

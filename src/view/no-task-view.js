@@ -1,13 +1,15 @@
 import AbstractView from '../framework/view/abstract-view.js';
+import {TextNoEvent} from '../const.js';
 
 /**
  * Функция для получения разметки надписи, когда точки маршрута отсутсвуют
  * @returns {string} Разметка созданного элемента
  */
-function createNoTaskTemplate() {
+function createNoTaskTemplate(filterType) {
+  const noTaskTextValue = TextNoEvent[filterType];
   return (
     `<p class="trip-events__msg">
-      Click New Event to create your first point
+      ${noTaskTextValue}
     </p>`
   );
 }
@@ -16,11 +18,18 @@ function createNoTaskTemplate() {
  * @class Класс для создания надписи, когда точки маршрута отсутсвуют
  */
 export default class NoTaskView extends AbstractView {
-/**
+  #filterType = null;
+
+  constructor({filterType}) {
+    super();
+    this.#filterType = filterType;
+  }
+
+  /**
    * Метод для создания надписи
    * @returns {HTMLElement} Созданный элемент
    */
   get template() {
-    return createNoTaskTemplate();
+    return createNoTaskTemplate(this.#filterType);
   }
 }
