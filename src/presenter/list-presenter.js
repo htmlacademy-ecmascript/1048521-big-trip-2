@@ -3,6 +3,7 @@ import {remove, render, RenderPosition} from '../framework/render.js';
 import NoTaskView from '../view/no-task-view.js';
 import TripFormSortView from '../view/trip-form-sort-view.js';
 import PointPresenter from './point-presenter.js';
+import NewTaskPresenter from './new-task-presenter.js';
 import {sortTaskTime, sortTaskPrice} from '../utils.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 import {filter} from '../utils.js';
@@ -21,17 +22,24 @@ export default class ListPresenter {
   #loadMoreButtonComponent = null;
   #filterModel = null;
   #filterType = FilterType.EVERYTHING;
+  #newTaskPresenter = null;
 
   /**
    * @param {HTMLElement} boardContainer Контейнер для отображения списка точек маршрута
    * @param {Array} tasksModel Массив с данными для точек маршрута
    */
-  constructor({boardContainer, tasksModel, filterModel}) {
+  constructor({boardContainer, tasksModel, filterModel, onNewTaskDestroy}) {
     this.#boardContainer = boardContainer;
     this.#tasksModel = tasksModel;
     this.#filterModel = filterModel;
     this.#filterModel.addObserver(this.#handleModelEvent);
     this.#tasksModel.addObserver(this.#handleModelEvent);
+
+    this.#newTaskPresenter = new NewTaskPresenter({
+      taskListContainer: this.#listComponent.element,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewTaskDestroy
+    });
   }
 
   /**
@@ -59,10 +67,17 @@ export default class ListPresenter {
     this.#renderBoard();
   }
 
+  createTask() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newTaskPresenter.init();
+  }
+
   /**
    * Метод закрытия всех открытых форм
    */
   #handleModeChange = () => {
+    this.#newTaskPresenter.destroy();
     this.#taskPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -119,7 +134,7 @@ export default class ListPresenter {
       currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange
     });
-    render(this.#sortElement, this.#listComponent.element, RenderPosition.AFTERBEGIN);
+    render(this.#sortElement, this.#listComponent.element, RenderPosition.BEFOREBEGIN);
   }
 
   /**
@@ -146,6 +161,7 @@ export default class ListPresenter {
   }
 
   #clearBoard({resetSortType = false} = {}) {
+    this.#newTaskPresenter.destroy();
     this.#taskPresenters.forEach((presenter) => presenter.destroy());
     this.#taskPresenters.clear();
     remove(this.#sortElement);

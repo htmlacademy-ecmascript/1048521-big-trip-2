@@ -40,9 +40,6 @@ const MOCK_POINTS = Array.from({length: mockPoints.length}, getRandomPoints);
 // данные точек маршрута, дополнительных опций и направлений
 const mergedData = mergeDataArrays(MOCK_POINTS, mockOffers, mockDestinations);
 
-console.log('Mock points:', MOCK_POINTS);
-console.log('Merged data:', mergedData);
-
 /**
  * @class Класс для работы с данными точек маршрута
  */
