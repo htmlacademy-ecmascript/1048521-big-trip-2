@@ -10,11 +10,11 @@ export default class FilterPresenter {
   #filterComponent = null;
   #listPresenter = null;
 
-  constructor({filterContainer, filterModel, tasksModel}) {
+  constructor({filterContainer, filterModel, tasksModel, listPresenter}) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
     this.#tasksModel = tasksModel;
-
+    this.#listPresenter = listPresenter;
     this.#tasksModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -58,7 +58,7 @@ export default class FilterPresenter {
   };
 
   #handleFilterTypeChange = (filterType) => {
-    if (this.#filterModel.filter === filterType) {
+    if (!this.#listPresenter) {
       return;
     }
 

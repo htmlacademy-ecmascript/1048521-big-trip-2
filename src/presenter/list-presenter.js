@@ -188,4 +188,10 @@ export default class ListPresenter {
     this.#renderSort();
     this.#renderTaskList();
   }
+
+  resetSortType() {
+    this.#currentSortType = SortType.DAY;
+    this.#clearBoard();
+    this.#renderBoard();
+  }
 }

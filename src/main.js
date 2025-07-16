@@ -27,7 +27,8 @@ const listPresenter = new ListPresenter({
 const filterPresenter = new FilterPresenter({
   filterContainer,
   filterModel,
-  tasksModel
+  tasksModel,
+  listPresenter: listPresenter
 });
 
 
