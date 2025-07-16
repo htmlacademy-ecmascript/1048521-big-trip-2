@@ -2,6 +2,7 @@ import {getRandomPoints, mockPoints} from '../mock/mock-points.js';
 import {mockOffers} from '../mock/mock-offers.js';
 import {mockDestinations} from '../mock/mock-destinations.js';
 import Observable from '../framework/observable.js';
+import { UpdateType } from '../const.js';
 
 /**
  * Функция, которая объединяет данные точек маршрута в массив
@@ -56,25 +57,37 @@ export default class PointModel extends Observable {
   }
 
   /**
-   * Метод для получения массива точек маршрута
+   * Метод для получения всех точек маршрута (с учетом фильтра)
+   * @returns {Array}
    */
   getTasks() {
     return this.#tasks;
   }
 
+  /**
+   *  Метод для записи новых точек маршрута
+   * @param {Array} tasks
+   */
+  setTasks(tasks) {
+    this.#tasks = tasks;
+    this._notify(UpdateType.MAJOR);
+  }
+
+  /**
+   * Метод для обновления конкретной точки
+   * @param {string} updateType
+   * @param {Object} update
+   */
   updateTask(updateType, update) {
     const index = this.#tasks.findIndex((task) => task.id === update.id);
-
     if (index === -1) {
-      throw new Error('Can\'t update unexisting task');
+      throw new Error('Task not found');
     }
-
     this.#tasks = [
       ...this.#tasks.slice(0, index),
       update,
       ...this.#tasks.slice(index + 1),
     ];
-
     this._notify(updateType, update);
   }
 
@@ -99,6 +112,6 @@ export default class PointModel extends Observable {
       ...this.#tasks.slice(index + 1),
     ];
 
-    this._notify(updateType);
+    this._notify(updateType, update);
   }
 }

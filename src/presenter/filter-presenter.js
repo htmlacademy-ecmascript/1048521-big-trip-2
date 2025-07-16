@@ -8,6 +8,7 @@ export default class FilterPresenter {
   #filterModel = null;
   #tasksModel = null;
   #filterComponent = null;
+  #listPresenter = null;
 
   constructor({filterContainer, filterModel, tasksModel}) {
     this.#filterContainer = filterContainer;
@@ -62,5 +63,6 @@ export default class FilterPresenter {
     }
 
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this.#listPresenter.resetSortType();
   };
 }

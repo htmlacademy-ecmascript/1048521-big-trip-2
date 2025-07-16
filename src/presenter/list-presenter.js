@@ -49,7 +49,7 @@ export default class ListPresenter {
   get tasks() {
     this.#filterType = this.#filterModel.filter;
     const tasks = this.#tasksModel.tasks;
-    const filteredTasks = filter[this.#filterType](tasks);
+    const filteredTasks = filter[this.#filterModel.filter](tasks);
 
     switch (this.#currentSortType) {
       case 'date-time':
@@ -77,7 +77,9 @@ export default class ListPresenter {
    * Метод закрытия всех открытых форм
    */
   #handleModeChange = () => {
-    this.#newTaskPresenter.destroy();
+    if (this.#newTaskPresenter) {
+      this.#newTaskPresenter.destroy();
+    }
     this.#taskPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -161,7 +163,6 @@ export default class ListPresenter {
   }
 
   #clearBoard({resetSortType = false} = {}) {
-    this.#newTaskPresenter.destroy();
     this.#taskPresenters.forEach((presenter) => presenter.destroy());
     this.#taskPresenters.clear();
     remove(this.#sortElement);
