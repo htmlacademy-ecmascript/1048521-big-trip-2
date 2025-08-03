@@ -1,6 +1,8 @@
 import {getRandomPoints, mockPoints} from '../mock/mock-points.js';
 import {mockOffers} from '../mock/mock-offers.js';
 import {mockDestinations} from '../mock/mock-destinations.js';
+import Observable from '../framework/observable.js';
+import { UpdateType } from '../const.js';
 
 /**
  * Функция, которая объединяет данные точек маршрута в массив
@@ -42,16 +44,74 @@ const mergedData = mergeDataArrays(MOCK_POINTS, mockOffers, mockDestinations);
 /**
  * @class Класс для работы с данными точек маршрута
  */
-export default class PointModel {
+export default class PointModel extends Observable {
   #tasks = null;
+
   constructor() {
+    super();
     this.#tasks = mergedData;
   }
 
+  get tasks() {
+    return this.#tasks || [];
+  }
+
   /**
-   * Метод для получения массива точек маршрута
+   * Метод для получения всех точек маршрута (с учетом фильтра)
+   * @returns {Array}
    */
   getTasks() {
     return this.#tasks;
+  }
+
+  /**
+   *  Метод для записи новых точек маршрута
+   * @param {Array} tasks
+   */
+  setTasks(tasks) {
+    this.#tasks = tasks;
+    this._notify(UpdateType.MAJOR);
+  }
+
+  /**
+   * Метод для обновления конкретной точки
+   * @param {string} updateType
+   * @param {Object} update
+   */
+  updateTask(updateType, update) {
+    const index = this.#tasks.findIndex((task) => task.id === update.id);
+    if (index === -1) {
+      throw new Error('Task not found');
+    }
+    this.#tasks = [
+      ...this.#tasks.slice(0, index),
+      update,
+      ...this.#tasks.slice(index + 1),
+    ];
+    this._notify(updateType, update);
+  }
+
+  addTask(updateType, update) {
+    this.#tasks = [
+      update,
+      ...this.#tasks,
+    ];
+
+    this._notify(updateType, update);
+  }
+
+  deleteTask(updateType, update) {
+    const index = this.#tasks.findIndex((task) => task.id === update.id);
+
+    if (index === -1) {
+      throw new Error('Can\'t delete unexisting task');
+    }
+
+    this.#tasks = [
+      ...this.#tasks.slice(0, index),
+      ...this.#tasks.slice(index + 1),
+    ];
+
+    this._notify(updateType, update);
   }
 }

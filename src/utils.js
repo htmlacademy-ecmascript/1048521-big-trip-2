@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { FilterType } from './const.js';
 
 /**
  * @const
@@ -81,17 +82,7 @@ function calculateTripDuration(start, end) {
 }
 
 /**
-   * Функция обновления точки маршрута, если совпадает id
-   * @param {object} items Старые данные
-   * @param {object} update Обновленные данные
-   * @returns {Array} - Новый массив с обновленной точкой маршрута
-   */
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
-
-/**
- * Функция , которая преобразует длительность из формата "XH YM" в общее количество минут
+ * Функция, которая преобразует длительность из формата "XH YM" в общее количество минут
  * @param {string} duration Длительность маршрута в формате "XH YM"
  * @returns {number} Общее количество минут
  */
@@ -127,5 +118,22 @@ function sortTaskPrice(taskA, taskB) {
   return taskB.basePrice - taskA.basePrice;
 }
 
+const filter = {
+  [FilterType.EVERYTHING]: (tasks) => tasks || [],
+  [FilterType.FUTURE]: (tasks) =>
+    (tasks || []).filter((task) => task.startDate && dayjs(task.startDate).isValid() && dayjs(task.startDate).isAfter(dayjs())),
+  [FilterType.PRESENT]: (tasks) =>
+    (tasks || []).filter(
+      (task) =>
+        task.startDate &&
+        task.endDate &&
+        dayjs(task.startDate).diff(dayjs()) <= 0 &&
+        dayjs(task.endDate).diff(dayjs()) >= 0
+    ),
+  [FilterType.PAST]: (tasks) =>
+    (tasks || []).filter(
+      (task) => task.endDate && dayjs(task.endDate).isValid() && dayjs(task.endDate).isBefore(dayjs()))
+};
 
-export {updateItem, getRandomArrayElement, humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate, sortTaskPrice, sortTaskTime};
+
+export {getRandomArrayElement, humanizeTaskDueDate, showTripDuration, calculateTripDuration, showFullDate, showFullDateTime, showNewPointDate, sortTaskPrice, sortTaskTime, filter};

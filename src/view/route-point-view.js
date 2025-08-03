@@ -23,6 +23,7 @@ function createAddServices(offers) {
  */
 function createRoutPointTemplate(task) {
   const {destinationDetails, type, offers, startDate, endDate, basePrice, isFavorite} = task;
+
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
     : 'event__favorite-btn';

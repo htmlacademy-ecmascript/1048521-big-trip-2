@@ -9,13 +9,23 @@ const SortType = {
 };
 
 /**
+ * @enum {string} Перечисление фильтров
+ */
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+/**
  * @enum {string} Перечисление сообщений в случае, когда точки маршрута отсутствуют
  */
 const TextNoEvent = {
-  EVERYTHING: 'Click New Event to create your first point',
-  PAST: 'There are no past events now',
-  PRESENT: 'There are no present events now',
-  FUTURE: 'There are no future events now',
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.FUTURE]: 'There are no future events now',
 };
 
 /**
@@ -26,4 +36,16 @@ const ModeCode = {
   EDITING: 'EDITING',
 };
 
-export {TextNoEvent, ModeCode, SortType};
+const UserAction = {
+  UPDATE_TASK: 'UPDATE_TASK',
+  ADD_TASK: 'ADD_TASK',
+  DELETE_TASK: 'DELETE_TASK',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export {TextNoEvent, ModeCode, SortType, FilterType, UpdateType, UserAction};

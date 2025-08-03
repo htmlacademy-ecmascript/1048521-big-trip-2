@@ -12,6 +12,14 @@ function createNewEventButtonTemplate() {
  * @class Класс для создания кнопки для новой формы
  */
 export default class NewEventButtonView extends AbstractView {
+  #handleClick = null;
+
+  constructor({onClick}) {
+    super();
+    this.#handleClick = onClick;
+    this.element.addEventListener('click', this.#clickHandler);
+  }
+
   /**
    * Метод для создания кнопки новой формы точки маршрута
    * @returns {HTMLElement} Созданную кнопку
@@ -19,4 +27,9 @@ export default class NewEventButtonView extends AbstractView {
   get template() {
     return createNewEventButtonTemplate();
   }
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleClick();
+  };
 }
