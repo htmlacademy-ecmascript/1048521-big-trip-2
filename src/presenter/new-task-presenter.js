@@ -2,7 +2,6 @@ import {remove, render, RenderPosition} from '../framework/render.js';
 import RoutPointEditView from '../view/route-point-edit-view.js';
 import {nanoid} from 'nanoid';
 import {UserAction, UpdateType} from '../const.js';
-import { mockDestinations } from '../mock/mock-destinations';
 
 export default class NewTaskPresenter {
   #taskListContainer = null;
